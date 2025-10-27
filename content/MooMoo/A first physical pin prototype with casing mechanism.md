@@ -1,6 +1,11 @@
 Date : 2024-07-07
 
-# Task : Create a first physical pin prototype with casing mechanism
+---
+date: 2024-07-07
+
+---
+ 
+The rest of your content lives here. You can use **Markdown** here :)
 
 # Goals
 - Test usability of prepared casing for assessment of pin movement smoothness and effectiveness with the active DC motor. 
