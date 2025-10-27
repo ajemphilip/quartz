@@ -1,0 +1,137 @@
+Date : 2024-07-14
+
+# Task : Pin Block and Movement Solutions. Device exterior pin holder casing preparation
+
+# Goals
+- Consider options for and prototype possible click functionality of the pin system
+- Prototype and visualize the device casing with consideration to most comprehensible accommodation of braille cell
+
+# Description
+The current section focused on addressing the previous pin prototype and accommodate click affordances to test possible techniques to add interactivity. It also explores the possibilities to accommodate giant braille cell to reflect the real measurement of embossed on paper braille symbols. 
+
+# Prototyping
+## Casing
+- Parts were precisely measured using caliper so now the casing elements match with each other and tightly clip in
+- The top pin and bottom pin parts were slightly polished with sand paper to give more smooth movement
+- The thin and thick walls were addressed and it was determined that wall thickness of around 2mm works the best
+
+## Movement
+The actual movement of the pin is sufficient to accommodate the reflected embossed pin height and from the calculation it might be around 3.5cm to articulate braille pin materiality
+
+## Pin Holder Tray
+![[Pasted image 20240715222323.png]]
+
+The pin holder tray was design to accommodate the real ratio of braille pin according to the [Braille Authority of North America](https://brailleauthority.org/size-and-spacing-braille-characters#:~:text=1%20The%20nominal%20height%20of,3.2.). The calculation of base diameter of braille dots divided by nominal distance from center to center of adjacent dots(2.34mm/1.44mm) revealed the ratio between the braille embossed pins diameter and its distance to other pin which was directly translated to enlarged braille pin to keep original ratio as the closest informative exploratory medium. 
+
+The pre-prototype conceptual render had 16pins of different shapes but after consideration of simply understanding a braille pin as concept as well as additional memory and cognitive load. I determined that 6pin braille cell can be sufficient. 
+
+```
+module main() {
+  difference() {
+    cube([ 180, 115, 10 ], center = true);
+    translate([ 0, 32.5, 0 ]) cube([ 6, 6, 100 ], center = true);
+    translate([ 0, -32.5, 0 ]) cube([ 6, 6, 100 ], center = true);
+    translate([ -65, -32.5, 0 ]) cube([ 6, 6, 100 ], center = true);
+    translate([ -65, 32.5, 0 ]) cube([ 6, 6, 100 ], center = true);
+    translate([ 65, 32.5, 0 ]) cube([ 6, 6, 100 ], center = true);
+    translate([ 65, -32.5, 0 ]) cube([ 6, 6, 100 ], center = true);
+    translate([ 0, 23, 0 ]) cube([ 6, 6, 100 ], center = true);
+    translate([ 0, -23, 0 ]) cube([ 6, 6, 100 ], center = true);
+    translate([ 65, -23, 0 ]) cube([ 6, 6, 100 ], center = true);
+    translate([ 65, 23, 0 ]) cube([ 6, 6, 100 ], center = true);
+    translate([ -65, 23, 0 ]) cube([ 6, 6, 100 ], center = true);
+    translate([ -65, -23, 0 ]) cube([ 6, 6, 100 ], center = true);
+  }
+}
+
+difference() {
+  main();
+  cube([ 165, 28.75, 100 ], center = true);
+  translate([ 35, 0, 0 ]) cube([ 28.75, 100, 100 ], center = true);
+  translate([ -35, 0, 0 ]) cube([ 28.75, 100, 100 ], center = true);
+}
+
+difference() {
+  cube([ 185, 120, 5 ], center = true);
+  cube([ 180, 115, 10 ], center = true);
+}
+```
+
+## Pin Click Function
+The pin click functionality is essential to give user possibility to interact with the braille cell. In the prototype the button was placed at the bottom below the pin casing supporting element to when clicked apply the pressure and click. The prototype was divided into 2 parts for modularity (Fig 2.): 
+bottom piece and top piece
+
+![[Pasted image 20240716165509.png]]
+Sketch of the Device
+![[Pasted image 20240716170644.png]]
+Bottom Prototype
+![[Pasted image 20240716170716.png]]
+Top Prototype
+
+# Creating
+The creation process involved only pin click functionality to check whether assumed affordances 
+will be met and the whole system will preform its motoric functions as well as be stable without excessive vibrations or misplacements
+
+To check that 3d parts were printed to see on a physical example if the pin will be stable and accommodate the click function. 
+
+3 parts were printed with MakerBot Replicator+ printer:
+- Button/Breadboard holder
+- Top Lid
+- Pin Tray
+
+![[Pasted image 20240717102747.png]]
+Breadboard in the 3D printed casing
+![[Pasted image 20240717102753.png]]
+Top lid that should hold the pin
+![[unnamed (2).jpg]]
+Pin Tray
+## Print Settings 
+| Setting               | Values Used                  |
+|------------------------|-------------------------------|
+| Layer Height           | 0.2 mm                        |
+| Infill Density         | 15%                           |
+| Infill Pattern         | Diamond                          |
+| Shells (Wall Lines)    | 2                             |
+| Top Layers             | 4                             |
+| Bottom Layers          | 3                             |
+| Print Speed            | 60 mm/s                       |
+| Travel Speed           | 90–120 mm/s                   |
+| Extruder Temperature (PLA) | 210°C                    |
+| Build Plate Temperature| 60°C                          |
+| Supports               | None      |
+| Raft                   | Enabled          |
+| Cooling Fan            | Enabled after 1–2 layers      |
+# Cost
+| Item             | Description          | Unit Price (CAD) |
+|------------------|----------------------|------------------|
+| DC Motor (9V)         | 9V motor              | 4.13             |
+| Filament         | Per spool             | 14.00            |
+| Screw and Nut (M5)    | Per unit              | 0.1155           |
+| Breadboard       | Small breadboard      | 1.46             |
+| Arduino Uno      | Microcontroller       | 39.75            |
+| **Total**        |                      | **59.4555**      |
+# Critical Reflection
+## The pin movement block
+The pin movement block is a major flaw and has to be addressed to avoid any motoric problems in the final prototype. The pin has to move smoothly and not lock in any case to avoid confusion when using the device to explore braille letter knowledge. Because of all physical fixed failed, the best option is to limit the spin time in the microcomputer's code to avoid blocks as well as add additional layer of disabling the motor with micro switch button.
+
+**Pros**: 
+- More stable movement of the pin without any flaws in terms of motoric usability
+
+**Cons**:
+- Addition of extra elements might add to the technological advancement and become a hard to assemble and to modify engineering creation
+## Pin holder tray
+Pin holder tray was designed to introduce further modularity into the device. The pins in this case can be easily removed from the tray and replaced with some other devices at the same time maintaining the proper ration of the embossed braille pin if the pin's radius remans the same. 
+
+**Pros**:
+- Application of real braille pin ratio in the giant braille pin approach
+- More explicit presentation of braille pin and its functionality
+
+## The click functionality
+The click functionality was not accomodated by the current design the idea of the bottom below the pin is not good in terms of pin stability. The motoric pin in the printed hole is wiggly and not stable what result in completely unusable prototype.
+To reflect on the future possibilities, the button can be directly on top of the pin so it wont interfere with the pin movement as well as perform its desired action.
+
+Video
+https://youtu.be/otTnPxwWhlw
+
+# References 
+Size and Spacing of Braille Characters | Braille Authority of North America_. (n.d.). Retrieved April 25, 2025, from [https://brailleauthority.org/size-and-spacing-braille-characters](https://brailleauthority.org/size-and-spacing-braille-characters)

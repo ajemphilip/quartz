@@ -1,0 +1,75 @@
+Date : 2024-12-08
+
+# Tasks : Raspberry Pi Zero 2 W and ESP32 UART connection
+
+# Goals
+- Create UART connection between ESP32 and Rasberry PI Zero 2 W
+
+# Description
+The design proposal introduces two devices: ESP32 for motor control and Raspberry PI Zero 2 W to accommodate user interaction. To communicate the devices in general can communicate through UART, more precisely through their console messages that are send and received via TX/RX pins and common ground.  In this proposal the millis code was modified by ChatGPT to exchange the button click to UART messages.
+
+# Prototyping
+## ESP32
+```
+#include <HardwareSerial.h>
+
+HardwareSerial mySerial(1); // Use UART1 on ESP32
+
+void setup() {
+    Serial.begin(115200);  // USB Serial for debugging
+    mySerial.begin(115200, SERIAL_8N1, 16, 17); // RX=16, TX=17 (UART1)
+
+    delay(1000);
+    Serial.println("ESP32-WROOM UART Ready");
+}
+
+void loop() {
+    mySerial.println("Hello Pi from ESP32-WROOM!");
+
+    if (mySerial.available()) {
+        String received = mySerial.readStringUntil('\n');
+        Serial.print("Received from Pi: ");
+        Serial.println(received);
+    }
+
+    delay(1000);
+}
+```
+## Raspberry PI Zero 2 W
+```
+import serial
+import time
+
+ser = serial.Serial("/dev/serial0", baudrate=115200, timeout=1)
+
+time.sleep(2)  # Allow ESP32 to initialize
+print("Raspberry Pi UART Ready")
+
+while True:
+    try:
+        # Send data to ESP32-WROOM
+        ser.write(b"Hello ESP32-WROOM from Pi!\n")
+
+        # Read incoming data from ESP32-WROOM
+        if ser.in_waiting > 0:
+            raw_data = ser.readline()
+            print(f"Raw Data: {raw_data}")  # Print raw bytes before decoding
+            decoded_data = raw_data.decode("utf-8", errors="ignore").strip()
+            print(f"Decoded Data: {decoded_data}")
+
+    except Exception as e:
+        print(f"UART Error: {e}")
+
+    time.sleep(1)
+
+```
+The ESP32 and Raspberry PI were created according to the following diagram: 
+![[UART Diagram.jpg]]
+# Cost
+| Item                   | Quantity | Unit Price (CAD) | Total (CAD) |
+|------------------------|----------|------------------|-------------|
+| Raspberry Pi Zero 2 W  | 1        | 22.72            | 22.72       |
+| ESP32-S3 Development Board | 1    | 8.67             | 8.67        |
+| **Total**              |          |                  | **31.39**   |
+# Critical Reflection
+ESP32 and Raspberry PI effectively communicate via UART. There is not delays and each microcontroller preform its action correctly. There are no flaws identified.

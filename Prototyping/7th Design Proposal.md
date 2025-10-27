@@ -1,0 +1,509 @@
+Date : 2024-09-01
+
+# Tasks : A comparison between other buttons prototypes and different motors speeds
+
+# Goals
+- Design the improvise 2 pin exterior casing of the device
+- Test means of assembly of such casing
+- Perform button click testing in the real device scenario
+
+# Description
+The design proposal introduces 3 new other buttons that might perform better in in terms of haptic press feelings, which have possibility to improve use experience. The proposal also performs tests of different button speeds and their functionality by creating 3 other pins and placing them side by side.  
+# Prototyping
+
+## Buttons
+Three additional deeper click buttons were selected for the mockup press test.
+
+![[IMG_6706.jpg]]
+Smaller Green Cap Button
+
+![[IMG_6705.jpg]]
+Large Red Cap Button
+
+![[IMG_6707.jpg]]   
+Smaller Red Cap Button
+ 
+## Smaller Green Cap Button
+
+#### Button Casing
+##### Images
+![[Pasted image 20240919131225.png|600]]
+![[Pasted image 20240919131303.png|600]]
+![[Pasted image 20240919131330.png|600]]
+##### Code
+```
+module cylinderTop () {
+    translate([0,0,9])
+    difference(){
+    cylinder(21,9,9,center=true);
+    cylinder(23,6,6,center=true);
+    }
+}
+    
+module transferCube () {
+    translate([0,0,-9])
+    cube([12,13,10],center=true);
+}
+
+module gripDots () {
+    translate([0,7.3,18.2])
+    sphere(r = 0.3);
+    translate([0,-7.3,18.2])
+    sphere(r = 0.3);
+    
+    translate([6.2,-3.7,18.2])
+    sphere(r = 0.3);
+    translate([6.2,3.7,18.2])
+    sphere(r = 0.3);
+    
+    translate([-6.2,3.7,18.2])
+    sphere(r = 0.3);
+    translate([-6.2,-3.7,18.2])
+    sphere(r = 0.3);
+    
+    //bottom grip dots in cylinder
+    translate([0,5.9,12.2])
+    sphere(r = 0.3);
+    translate([0,-5.9,12.2])
+    sphere(r = 0.3);
+    translate([5.9,0,12.2])
+    sphere(r = 0.3);
+    translate([-5.9,0,12.2])
+    sphere(r = 0.3);
+    
+}
+
+module railCyliderSupport () {
+     translate([0,2.3,-3.2])
+     cube([20,1.8,5],center=true); 
+     translate([0,-2.3,-3.2])
+     cube([20,1.8,5],center=true);
+}
+
+module cableHoles () {
+    
+    rotate([45,0,90])
+    translate([0,2,-6])
+    cylinder(11,3,3,center = true);
+    rotate([45,0,-90])
+    translate([0,2,-6])
+    cylinder(11,3,3,center = true);
+}
+    
+ module buttonScrewHolder () {
+     translate([0,0,19])
+      cylinder(3,8.5,8.5,$fn=6,center=true);
+}
+    
+    difference() {
+    cylinderTop ();
+    buttonScrewHolder();
+    cableHoles();
+}
+
+    difference () {
+    railCyliderSupport();
+    cableHoles();
+}
+    
+    difference (){
+    transferCube();
+    cableHoles();
+}
+    gripDots();
+```
+
+#### Braille Cap
+##### Images
+![[Pasted image 20240919131507.png|600]]
+![[Pasted image 20240919131538.png|600]]
+
+##### Code
+```
+module attachmentCube() {
+    translate([0,0,22])
+    difference(){
+        cylinder(26,11.35,11.35,center=true);
+        cylinder(28,9.35,9.35,center=true);
+        }
+    
+    }
+
+module cylinderPin() {
+    difference() {
+     cylinder(35,20,20);
+     translate([0,0,-8])
+     cylinder(35,18,18);
+     }
+    }
+ 
+   cylinderPin();
+   attachmentCube();
+```
+## Large Red Cap Button
+
+#### Button Casing
+##### Images
+![[Pasted image 20240919130023.png|600]]
+![[Pasted image 20240919130046.png|600]]
+![[Pasted image 20240919130110.png|600]]
+##### Code
+```
+module cylinderTop () {
+    translate([0,0,9.5])
+    difference(){
+    cylinder(25,12.5,12.5,center=true);
+    cylinder(26,8.5,8.5,center=true);
+    }
+}
+
+module transferCube () {
+    translate([0,0,-9])
+    cube([12,13,10],center=true);
+}
+
+module gripDots () {
+    translate([0,9.8,21.5])
+    sphere(r = 0.3);
+    translate([0,-9.8,21.5])
+    sphere(r = 0.3);
+    
+    translate([8.5,-4.7,21.5])
+    sphere(r = 0.3);
+    translate([8.5,4.7,21.5])
+    sphere(r = 0.3);
+    
+    translate([-8.3,5,21.5])
+    sphere(r = 0.3);
+    translate([-8.3,-5.1,21.5])
+    sphere(r = 0.3);
+    
+    //inside cylinder dots 
+    translate([0,8.5,16.2])
+    sphere(r = 0.3);
+    translate([0,-8.5,16.2])
+    sphere(r = 0.3);
+    translate([8.5,0,16.2])
+    sphere(r = 0.3);
+    translate([-8.5,0,16.2])
+    sphere(r = 0.3);
+}
+
+module railCyliderSupport () {
+     translate([0,2.3,-3.2])
+     cube([20,1.8,5],center=true); 
+     translate([0,-2.3,-3.2])
+     cube([20,1.8,5],center=true);
+}
+    
+ module buttonScrewHolder () {
+     translate([0,0,22])
+     cylinder(3,11.2,11.2,$fn=6,center=true);
+}
+   
+    difference() {
+    cylinderTop ();
+    buttonScrewHolder();
+}
+    
+    transferCube();
+    railCyliderSupport();
+    gripDots();
+```
+
+#### Braille Cap
+##### Images
+![[Pasted image 20240919130421.png|600]]
+![[Pasted image 20240919130326.png|600]]
+
+##### Code
+```
+module attachmentCube() {
+    translate([0,0,22])
+    difference(){
+        cylinder(15,15,15,center=true);
+        cylinder(17,12.9,12.9,center=true);
+        }
+    
+    }
+
+module cylinderPin() {
+    difference() {
+     cylinder(35,20,20);
+     translate([0,0,-8])
+     cylinder(35,18,18);
+     }
+    }
+
+   cylinderPin();
+   attachmentCube();
+```
+
+
+## Smaller Red Cap Button
+#### Button Casing
+##### Images
+![[Pasted image 20250408164241.png]]
+![[Pasted image 20250408164258.png]]
+![[Pasted image 20250408164316.png]]
+##### Code
+```
+module cylinderTop () {
+    translate([0,0,11])
+    difference(){
+    cylinder(26,10,10,center=true);
+    cylinder(28,6.5,6.5,center=true);
+    }
+}
+    
+module transferCube () {
+    translate([0,0,-9])
+    cube([12,13,10],center=true);
+}
+
+module gripDots () {
+    translate([0,7.4,23.2])
+    sphere(r = 0.3);
+     translate([0,-7.4,23.2])
+    sphere(r = 0.3);
+    
+    translate([6.3,-3.8,23.2])
+    sphere(r = 0.3);
+    translate([6.3,3.8,23.2])
+    sphere(r = 0.3);
+    
+    translate([-6.3,3.8,23.2])
+    sphere(r = 0.3);
+    translate([-6.3,-3.8,23.2])
+    sphere(r = 0.3);
+    
+    //inside cylinder dots 
+    translate([0,6.5,19.2])
+    sphere(r = 0.3);
+    translate([0,-6.5,19.2])
+    sphere(r = 0.3);
+    translate([6.5,0,19.2])
+    sphere(r = 0.3);
+    translate([-6.5,0,19.2])
+    sphere(r = 0.3);
+    
+}
+
+module railCyliderSupport () {
+     translate([0,2.3,-3.2])
+     cube([20,1.8,5],center=true); 
+     translate([0,-2.3,-3.2])
+     cube([20,1.8,5],center=true);
+    }
+    
+module cableHoles () {
+    rotate([45,0,90])
+    translate([0,2,-6])
+    cylinder(11,3,3,center = true);
+     rotate([45,0,-90])
+    translate([0,2,-6])
+    cylinder(11,3,3,center = true);
+    }
+    
+ module buttonScrewHolder () {
+     translate([0,0,23])
+      cylinder(3,8.5,8.5,$fn=6,center=true);
+     }
+   
+    difference() {
+    cylinderTop ();
+    cableHoles();
+    buttonScrewHolder();  
+        }
+        
+    difference () {
+    transferCube();
+    cableHoles();
+        }
+        
+    difference () {
+    railCyliderSupport();
+    cableHoles();
+    }    
+        
+    gripDots();
+   ```
+
+#### Braille Cap
+##### Images
+![[Pasted image 20250408164538.png]]
+![[Pasted image 20250408164555.png]]
+
+##### Code
+```
+module attachmentCube() {
+    translate([0,0,22])
+    difference(){
+        cylinder(26,12,12,center=true,$fn = 300);
+        cylinder(28,10.75,10.75,center=true,$fn = 300);
+        }
+    }
+
+module cylinderPin() {
+    difference() {
+     cylinder(35,20,20,$fn = 300);
+     translate([0,0,-5])
+     cylinder(35,18,18,$fn = 300);
+     }
+    }
+
+   cylinderPin();
+   attachmentCube();
+```
+
+## Electronic Setup
+### Arduino Code
+```
+//Button Pins
+int buttonPinOne = 9;
+int Stby = 11;
+
+//Motor A
+int pwmA = 4;
+int in1A = 5;
+int in2A = 3;
+
+
+//Button States
+int buttonStateOne = 0;
+
+//TopStateTiming
+int pinOneTopState = 0;
+
+//Constants
+int TIME_VALUE = 2000;
+
+// Motor Speed Values - Start at zero
+int MotorSpeedA = 0;
+
+void setup() {
+
+   Serial.begin(9600);
+
+  //Motor A setup
+  pinMode(pwmA, OUTPUT);
+  pinMode(in1A, OUTPUT);
+  pinMode(in2A, OUTPUT);
+
+    //Button pins setup
+    pinMode(buttonPinOne, INPUT);
+
+    //Digital Write since button have 2 pins only
+    digitalWrite(buttonPinOne, HIGH);
+}
+
+void loop() {
+
+    // button States
+    buttonStateOne = digitalRead(buttonPinOne);
+
+  if (buttonStateOne == 0) {
+         // Button One and Motor One Code
+      if (pinOneTopState == 0) {
+      Serial.print("PRESSED ONE");
+      digitalWrite(in1A, LOW);
+      digitalWrite(in2A, HIGH);
+      MotorSpeedA = 255;
+      digitalWrite(pwmA, MotorSpeedA);
+      delay(TIME_VALUE);
+      MotorSpeedA = 0;
+      digitalWrite(pwmA, MotorSpeedA);
+      pinOneTopState = 1;
+    }
+
+    else {
+      Serial.print("CLICKED ONE");
+      digitalWrite(in1A, HIGH);
+      digitalWrite(in2A, LOW);
+      MotorSpeedA = 255;
+      digitalWrite(pwmA, MotorSpeedA);
+      delay(TIME_VALUE);
+      MotorSpeedA = 0;
+      digitalWrite(pwmA, MotorSpeedA);
+      pinOneTopState = 0;
+    }
+  }
+```
+## Motors
+The pins with the motors were created according to the previous prototype. The only difference for each pin was to test if the support railings will improve both stability, smoothness and speed of the movement. 
+The selected motor rations were : 
+- 1:20
+- 1:30
+- 1:50
+- 1:150
+# Creating
+The previously printed button casings were populated with the listed buttons and pin casings different speeds of motors. All motors were tested in terms of speed and buttons were empirically pressed to understand the haptic feeling and tradeoffs of each button. Because of the button from the [[4th Design Proposal]] was not printed or tested due to printer malfunction it will be tested in this proposal.
+The pins were places on the pin tray.
+
+Motors and microcontroller were connected according to this diagram: 
+![[Arduino Motor - Diagram 1 1.png]]
+
+The latest steps included labeling all the motors for clarity. 
+The motors used just one board and pins were exchanges to test each one separately.
+## Print Settings 
+| Setting               | Values Used                  |
+|------------------------|-------------------------------|
+| Layer Height           | 0.2 mm                        |
+| Infill Density         | 30%                           |
+| Infill Pattern         | Diamond                          |
+| Shells (Wall Lines)    | 2                             |
+| Top Layers             | 4                             |
+| Bottom Layers          | 3                             |
+| Print Speed            | 60 mm/s                       |
+| Travel Speed           | 90–120 mm/s                   |
+| Extruder Temperature (PLA) | 210°C                    |
+| Build Plate Temperature| 60°C                          |
+| Supports               | None     |
+| Raft                   | Enabled       |
+| Cooling Fan            | Enabled after 1–2 layers      |
+# Cost
+| Item             | Quantity | Unit Price (CAD) | Total (CAD) |
+|------------------|----------|------------------|-------------|
+| Screw (M5)           | 1        | 0.1155           | 0.1155      |
+| Motor (N10)            | 1        | 3.48             | 3.48        |
+| Motor Controller (TB6612FNG) | 1        | 0.72             | 0.72        |
+| Arduino Uno      | 1        | 39.75            | 39.75       |
+| Filament         | 1        | 14.00            | 14.00       |
+
+| Button Type        | Button Price (CAD) | Total Cost (CAD) |
+|--------------------|--------------------|------------------|
+| Small             | 0.0392             | 58.11            |
+| Smaller Green Cap Button     | 0.386              | 58.46            |
+| Smaller Red Cap Button          | 0.391              | 58.46            |
+| Large Red Cap Button        | 0.428              | 58.50            |
+
+# Critical Reflection
+
+## Buttons
+All most of the buttons offered robust solution to the click functionality. The result of the experiment confirmed that haptic button usage change the perspective and feeling of used technology.  When in casing there are some problems to push the button completely on the sides because it is being blocked by casing which should be resolved in the next iterations of casing that give support to the braille pin cap.
+
+The button click video can be found in this link:
+https://youtube.com/shorts/FtqMDwGj1FA
+
+Because of additional support the pin click mechanism is performing its action. The wobble is gone when clicking smaller surface. It will be further tested with whole motoric pin and braille pin attached. Even if the pin wont perform well it only requires more support from triangular rails meaning bigger rail area to attach to bottom tray. The firmness of the click is barely noticeable because the button size making it the least preferable choice. 
+
+Smaller Green Cap Button definitely offers a firm click with noticeable pushback. The click is definitely haptic oriented and the pushback gives great tactile interpretation when the button is released. The only concern is that button when clicked might be on the firmer side making it less intuitive for small children when their push might not be strong enough to press it. 
+
+Large Red Cap Button showcases a very slight tactile feedback. The button is very soft making the click almost unnoticeable under the layer of braille pin cap. In this case the tactile feedback doesn't offer significant push to feel the click therefore its not an ideal option.
+
+Smaller Red Cap Button it definitely moderately balanced when it comes to click function. There is some feedback and generally button stays moderately firm when pressed. What is very advantageous is that the button click is a bit longer giving the complete idea that it was pressed. This button definitely makes the most comfortable interaction and feedback from the empirically tested perspective. 
+
+## Motors
+Motors functionality was assessed based on two factors: 
+- pin blocking
+- speed
+
+The testing can be seen on the following videos 
+- 1:20 Gear Ratio: https://youtube.com/shorts/JGYE03wt6rw
+- 1:30 Gear Ratio: https://youtube.com/shorts/2SLcrsXtvDg
+- 1:50 Gear Ratio: https://youtube.com/shorts/ViK1gq_LtO8
+- 1:150 Gear Ratio: https://youtube.com/shorts/6Oaa7_6dFDk
+
+Generally motors 1:20 and 1:30 performed very well in terms of speed. The pin was going relatively fast upwards and downwards making the motor desired version in terms of user experience and pin movment. On the other hand because of their speed they often were blocking the screw and werent strong enough to overcome friction.
+Motor 1:50 still seems to be optimal with the relatively fast rotation making the pin move quickly and with the enough torque to overcome the friction blocking only from time to time.
+Motor 1:150 definitely was too slow to operate the braille pin making the pin move extremely slowly. On the other hand the blockage was completely gone due to its enormous power.

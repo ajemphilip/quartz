@@ -1,0 +1,288 @@
+Date : 2024-08-19
+
+# Tasks : New Motor testing and Pin Reconstruction
+
+# Goals
+- Adjust the pin module to meet the needs of new motor
+- Test motor 50:1 motor power (torque) in terms of screw friction block and speed of moving pin up and down
+
+# Description 
+The regular gearless dc motor was unable to move pin when at maximum or minimum spot because of the metal friction between the nut and screw. Unfortunately all means of solving the situation through means other then motor replacement failed. Because of that, the old dc motors was replaced with geared motor powerful motor. Since the new motor is significantly smaller some adjustments had to be done to the pin casing. When finished the whole system was tested and its functionality reflected
+# Prototyping
+
+## Bottom Pin
+Because of the new motor, top pin was reconstructed to fit the motor component. Because of significantly smaller size of the motor the pin casing is thinner and possibly will benefit future space requirement for other electronic boards. Since the motor is rectangular the casing also mimics the shape of the motor. Because of that, the requirements for railings is not necessary to keep the top pin in place.
+### Images
+![[Pasted image 20240909104926.png]]
+![[Pasted image 20240909105006.png]]
+![[Pasted image 20240909105039.png]]
+![[Pasted image 20240909105058.png]]
+
+### Code
+```
+module mainCube () {
+difference() {
+cube([17,17,25],center=true);
+translate([0,0,3])
+cube([14,12,26],center=true);
+    }
+    }
+    
+module gripDots () {
+    translate([0,5.6,0])
+    sphere(1);
+    translate([0,-5.6,0])
+    sphere(1);
+    translate([6.6,0,0])
+    sphere(1);
+    translate([-6.6,0,0])
+    sphere(1);
+    }  
+    
+ module cableHoles (){
+     translate([4.5,0,-8])
+     cylinder(10,3,3,center=true);
+     translate([-4.5,0,-8])
+     cylinder(10,3,3,center=true);
+     }
+     
+module bottomAttachementCube () {
+    translate([0,0,-14])
+cube([8,8,6],center=true);
+    }
+    
+//Modules
+difference(){
+mainCube();
+cableHoles();
+}
+bottomAttachementCube();
+gripDots();
+
+```
+
+## Top Pin Casing
+Top pin similarly to bottom pin was altered to have rectangular shape. On the other hand, other then rectangular rail part, the casing didn't change its shape, form and functionality. The introduction of grip dots were designed to keep the button holder in place more tightly.
+
+### Images
+![[Pasted image 20240909104844.png]]
+
+### Code
+
+```
+module railPinCasing () {
+    difference () {
+        translate([0,0,-23])
+        cube([21,21,52],center=true);
+        translate([0,0,-28])
+        cube([18,18,48],center=true);
+        }
+    }
+
+module transferCube() {
+     translate([0,0,15.5])
+     cube([14,15,33],center=true);
+      }
+      
+module gripDots() {
+     translate([0,6.8,35])
+     sphere(r = 1);
+     translate([0,-6.8,35])
+     sphere(r = 1);
+     translate([6.4,0,35])
+     sphere(r = 1);
+     translate([-6.4,0,35])
+     sphere(r = 1);
+     }
+     
+ module gripDotsScrew () {
+translate([0,5,-3])
+sphere(0.2); 
+ translate([0,-5,-3])
+sphere(0.2);      
+}
+
+ module screwHolderCylinder () {
+     translate([0,0,-4])
+     cylinder(6.5,5.8,5.8,$fn=6,center=true);
+     }    
+     
+ module screwSpaceCylinder () {
+      cylinder(63,4.5,4.5,$fn=100,center=true);
+     }
+     
+ module topButtonHolder () {
+       difference() {
+       translate([0,0,34])
+       cube([17.5,18.5,13.5],center=true);
+       translate([0,0,31])
+       cube([12.6,13.6,20],center=true);
+             }
+     }  
+     
+module differencedTop () {
+        difference() {
+        transferCube();
+        screwHolderCylinder();
+        screwSpaceCylinder();
+            }
+        }  
+
+ module diferencedBot () {
+     difference() {
+        railPinCasing();
+        screwHolderCylinder();
+        screwSpaceCylinder();
+            }
+     }   
+//modules
+       diferencedBot();
+       differencedTop();  
+       topButtonHolder();
+       gripDots();
+       gripDotsScrew();
+```
+
+## Electronic Components
+The pin system used Arduino UNO microcontroller to connect and control all the parts.
+### Code
+```
+//Button Pins
+int buttonPinOne = 9;
+int Stby = 11;
+
+//Motor A
+int pwmA = 4;
+int in1A = 5;
+int in2A = 3;
+
+
+//Button States
+int buttonStateOne = 0;
+
+//TopStateTiming
+int pinOneTopState = 0;
+
+//Constants
+int TIME_VALUE = 2000;
+
+// Motor Speed Values - Start at zero
+int MotorSpeedA = 0;
+
+void setup() {
+
+   Serial.begin(9600);
+
+  //Motor A setup
+  pinMode(pwmA, OUTPUT);
+  pinMode(in1A, OUTPUT);
+  pinMode(in2A, OUTPUT);
+
+    //Button pins setup
+    pinMode(buttonPinOne, INPUT);
+
+    //Digital Write since button have 2 pins only
+    digitalWrite(buttonPinOne, HIGH);
+}
+
+void loop() {
+
+    // button States
+    buttonStateOne = digitalRead(buttonPinOne);
+
+  if (buttonStateOne == 0) {
+         // Button One and Motor One Code
+      if (pinOneTopState == 0) {
+      Serial.print("PRESSED ONE");
+      digitalWrite(in1A, LOW);
+      digitalWrite(in2A, HIGH);
+      MotorSpeedA = 255;
+      digitalWrite(pwmA, MotorSpeedA);
+      delay(TIME_VALUE);
+      MotorSpeedA = 0;
+      digitalWrite(pwmA, MotorSpeedA);
+      pinOneTopState = 1;
+    }
+
+    else {
+      Serial.print("CLICKED ONE");
+      digitalWrite(in1A, HIGH);
+      digitalWrite(in2A, LOW);
+      MotorSpeedA = 255;
+      digitalWrite(pwmA, MotorSpeedA);
+      delay(TIME_VALUE);
+      MotorSpeedA = 0;
+      digitalWrite(pwmA, MotorSpeedA);
+      pinOneTopState = 0;
+    }
+  }
+```
+
+### Motor
+The motor used in the current prototype was more powerful then regular 9V DC motor. It uses gears ratio of 50:1 to increase the torque of the whole system which possibly will resolve the problem of the pin blocking to give the pin system complete functionality and clear out any malfunctions in terms of motoric up and down movement.
+
+![[Pasted image 20240909104804.png]]
+### Motor Controller 
+Motor Controller board was used to control the motor movement. Since there will be 6 motors the motor controller will be useful in the future to control 2 motors simultaneously without the need to assemble complicated H-bridges. Two types of motor controllers were used: 
+#### L298N Motor Controller 
+![[Pasted image 20240909110318.png]]
+#### TB6612FNG Motor Controller
+![[Pasted image 20240909110257.png]]
+### Button
+Button component is a generic electronic button but slightly larger in size.
+![[Pasted image 20240909110838.png]]
+# Creating
+## 3D Printed Elements
+### Bottom Pin
+![[IMG_6699.jpg]]
+### Top Pin Casing
+![[IMG_6702.jpg]]
+### Braille Cap
+![[Pasted image 20250411144500.png]]
+
+## Button
+Button components were reprinted per proposal [[4th Design Proposal]]
+
+## Electronic Connection
+The setup was connected according to the following diagram:
+![[Arduino Motor - Diagram 1 1.png]]
+## Print Settings 
+| Setting               | Values Used                  |
+|------------------------|-------------------------------|
+| Layer Height           | 0.2 mm                        |
+| Infill Density         | 30%                           |
+| Infill Pattern         | Diamond                          |
+| Shells (Wall Lines)    | 2                             |
+| Top Layers             | 4                             |
+| Bottom Layers          | 3                             |
+| Print Speed            | 60 mm/s                       |
+| Travel Speed           | 90–120 mm/s                   |
+| Extruder Temperature (PLA) | 210°C                    |
+| Build Plate Temperature| 60°C                          |
+| Supports               | None     |
+| Raft                   | Enabled       |
+| Cooling Fan            | Enabled after 1–2 layers      |
+
+# Cost
+| Item              | Quantity | Unit Price (CAD) | Total (CAD) |
+|-------------------|----------|------------------|-------------|
+| Screw (M5)            | 1        | 0.1155           | 0.1155      |
+| Motor (N10)            | 1        | 3.48             | 3.48        |
+| Motor Controller (TB6612FNG) | 1        | 0.72             | 0.72        |
+| Arduino Uno       | 1        | 39.75            | 39.75       |
+| Filament          | 1        | 14.00            | 14.00       |
+| Button            | 1        | 0.0392           | 0.0392      |
+| **Total**         |          |                  | **58.10**   |
+# Critical Reflection
+The single pin testing is in this video: 
+https://youtube.com/shorts/QNMFdwNKOtY
+
+## Pin System Casing
+The casing definitely improved in terms of size. The construction is currently more ergonomic and definitely will improve pins placement in the casing as well as flexibility in terms of other electronic placement. The square shape without railing does its work quite well however when the movement occurs it is a little wobbly. It might occur because of the friction therefore the support railing parts might bring more stability while the system is moving.
+## Electronic Components
+### Motor
+The motor is powerful enough to push the top pin up and down without any problems or malfunctions. The motor speed on the other hand is a little too slow therefore other motors with different gear ratios will be tested. 
+### Motor Controller
+The L298N motor controller unfortunately happened to be obsolete (draws too much current to move the motor component) and it was replaced with modern TB6612FNG Motor Controller which performs its action correctly. 
+### Button 
+Button works well but only when the braille pin top attachment is pressed in the center. When pressed on the edge unfortunately the button doesn't click properly. Other important consideration is haptic click feeling which in the case of regular click button is not very noticeable. The button tactility while clicking has to be more recognizable.

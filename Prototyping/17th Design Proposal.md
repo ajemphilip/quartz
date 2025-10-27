@@ -1,0 +1,306 @@
+Date : 2025-01-12
+
+# Tasks : Interactive Connection to Raspberry PI Zero 2W and ESP32. Chat GPT response and storytelling testing and user flow. 
+
+# Goals
+- Test ESP32 and Raspberry PI as an interactive system
+- Create a usable storytelling functionality with ChatGPT
+- Test stories and device functionality
+- Form and understand user experience and user flow
+
+# Description
+The proposal aims to understand and test the ChatGPT as task facilitator and dynamic storyteller. It considers factors of robustness of the API call, user experience issues, voice quality as well as coherence of story formed. The setup uses microphone and the speaker to form a coherent user interaction with the story preference capture and extension of the plot to sustain and facilitate the task.
+# Prototyping
+## ChatGPT Prompt Engineering and Function
+The connection between components remained the same as in the [[16th Design Proposal]]. The ChatGPT usability is generally concentrated around proper explanation of its function. More precisely, its divided into two explanations:
+- ChatGPT Role
+- User Query
+In those two ChatGPT had to perfom a role of the storyteller and facilitatator (Introduce itself, encourage the user after finished exercise)
+### ChatGPT Role 
+Since the device materiality was directed to large letter concept and children use the role was picked for the ChatGPT to be interactive storyteller. The though process behind format of the prompt was following: 
+1. Explain the function
+2. Organize the output to specific length (2-3 sentences or 300 characters)
+The sample role were the following:
+
+>You are a friendly, engaging storytelling assistant that will lead chidren at the age of 0-5 through some braille exercises. Introduce yourself in a natural, conversational way.
+
+or
+
+>You are an encouraging AI. Generate a fun and engaging congratulatory message for someone who spelled a word correctly.
+
+or
+
+>You are continuing a story. Add only 2 sentences which is 300 characters maximum. Keep the pacing smooth and natural. Ensure sentences are complete and do not get cut off.
+### ChatGPT Query
+The queries were specific about the format of the outcome and were receiving the user voice inputted story decoded to text using Whisper Speech System. More precisely the query also asked about the format of the output but also is being asked to both start the story according to the user query and extend the story based on previous story. 
+The sample prompts were the following: 
+
+>Give me a great response to praise someone for spelling correctly.
+
+or
+
+>The theme is: {theme}. Begin the story in just 2-3 sentences.
+
+or 
+
+>Continue the story with exactly 2 sentences or 300 characters Ensure sentences are complete and do not get cut off. Current story: {previous_story}
+
+## Desired User Flow 
+1. Speech agent introduces itself or continues from prior interaction​
+2. User tells a story theme (15 seconds)​
+3. LLM generates a story that incorporates user's most recent (and possibly former) prompts​
+4. The agent poses Braille letter repetition task to the user​
+5. Braille pins rise to spell the letter​
+6. User pushes pins down to replicate the braille letter​
+7.  User completes task
+8. Speech agent vocally delivers encouraging message ​
+9. Speech agent extends the story​
+
+## Code 
+```
+import openai
+import os
+import sounddevice as sd
+import numpy as np
+import wave
+import subprocess
+import random
+import time
+import serial  # Import serial communil,;;;;;ttion
+import threading
+import re
+
+# OpenAI API Key
+api_key = "API-KEY"  # Replace with your actual API key
+client = openai.OpenAI(api_key=api_key)
+
+# Audio settings
+SAMPLE_RATE = 44100
+CHANNELS = 1
+DURATION = 15  # Listening time in seconds
+
+# Increase buffer size for smoother audio recording
+sd.default.latency = 'high'
+
+# Set system-wide volume to 100% for loudest playbacke
+subprocess.run(["amixer", "set", "PCM", "180%"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+# Keep track of used nouns
+selected_nouns = set()  
+
+# Serial communication setup
+ESP32_PORT = "/dev/serial0"  # Updated for Raspberry Pi UART
+BAUD_RATE = 115200
+try:
+    ser = serial.Serial(ESP32_PORT, BAUD_RATE, timeout=1)
+    time.sleep(2)  # Allow time for connection to establish
+    print("Connected to ESP32 via TX/RX!")
+except serial.SerialException as e:
+    print(f"Serial Error: {e}")
+    ser = None
+
+def play_signal():
+    subprocess.run(["mpg123", "--gain", "300", "signal.mp3"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+
+def play_end_signal():
+    subprocess.run(["mpg123", "--gain", "300", "signal.mp3"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+
+def record_audio(filename="input.wav"):
+    print("🎤 Listening... Speak now!")
+    recording = sd.rec(int(SAMPLE_RATE * DURATION), samplerate=SAMPLE_RATE, channels=CHANNELS, dtype=np.int16)
+    sd.wait()
+    play_end_signal()
+    with wave.open(filename, "wb") as wavefile:
+        wavefile.setnchannels(CHANNELS)
+        wavefile.setsampwidth(2)
+        wavefile.setframerate(SAMPLE_RATE)
+        wavefile.writeframes(recording.tobytes())
+    print("✅ Recording saved!")
+
+def transcribe_audio(filename="input.wav"):
+    with open(filename, "rb") as audio_file:
+        transcript = client.audio.transcriptions.create(
+            model="whisper-1",
+            file=audio_file
+        )
+    return transcript.text.strip()
+
+def play_processing():
+    def play_loop():
+        while processing_flag:
+            subprocess.run(["mpg123", "--gain", "300", "processing.mp3"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+    
+    global processing_flag
+    processing_flag = True
+    threading.Thread(target=play_loop, daemon=True).start()
+
+def stop_processing():
+    global processing_flag
+    processing_flag = False
+    subprocess.run(["mpg123", "--gain", "300", "processing.mp3"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+
+
+def generate_congratulatory_message():
+    response = client.chat.completions.create(
+        model="gpt-4-turbo",
+        temperature=1.2,
+        messages=[
+            {"role": "system", "content": "You are an encouraging AI. Generate a fun and engaging congratulatory message for someone who spelled a word correctly."},
+            {"role": "user", "content": "Give me a great response to praise someone for spelling correctly."}
+        ],
+        max_tokens=150
+    )
+    return re.sub(r'[^\w\s]','',response.choices[0].message.content.strip())
+
+def generate_intro():
+    system_instruction = (
+        "You are a friendly, engaging storytelling assistant that will lead chidren at the age of 0-5 through some braille exercises. Introduce yourself in a natural, conversational way. "
+    )
+    user_message = "Introduce yourself naturally before asking the user to share a story theme."
+    response = client.chat.completions.create(
+        model="gpt-4-turbo",
+        temperature=1.3,
+        messages=[
+            {"role": "system", "content": system_instruction},
+            {"role": "user", "content": user_message}
+        ],
+        max_tokens=180,
+        stop=["\n"]
+    )
+    return response.choices[0].message.content.strip()
+
+# Function to extend the story naturally
+def extend_story(previous_story):
+    system_instruction = (
+        "You are continuing a story. Add only 2 sentences which is 300 characters maximum. Keep the pacing smooth and natural. Ensure sentences are complete and do not get cut off."
+    )
+
+    user_message = f"Continue the story with exactly 2 sentences or 300 characters Ensure sentences are complete and do not get cut off. Current story: {previous_story}"
+
+    response = client.chat.completions.create(
+        model="gpt-4-turbo",
+        temperature=1.2,
+        messages=[
+            {"role": "system", "content": system_instruction},
+            {"role": "user", "content": user_message}
+        ],
+        max_tokens=160,
+        stop=["\n"]
+    )
+    return response.choices[0].message.content.strip()
+
+def select_noun(story):
+    words = story.split()
+    nouns = [word for word in words if word[0].isupper() and len(word) > 2]  # Picks proper nouns
+
+    if nouns:
+        unique_nouns = list(set(nouns) - selected_nouns)
+        if unique_nouns:
+            selected = random.choice(unique_nouns)
+        else:
+            selected = random.choice(nouns)  # Fallback if all are used
+    else:
+        selected = random.choice(words)  # Fallback if no proper nouns
+
+    selected_nouns.add(selected)  # Store used nouns
+    return selected
+
+
+def generate_story(theme):
+    system_instruction = (
+        "You are a skilled storyteller for young children. Start with only 2-3 engaging sentences. The story suppose to be suited for kids. Make sure it's simple and engaging."
+    )
+    user_message = f"The theme is: {theme}. Begin the story in just 2-3 sentences."
+    response = client.chat.completions.create(
+        model="gpt-4-turbo",
+        temperature=1.2,
+        messages=[
+            {"role": "system", "content": system_instruction},
+            {"role": "user", "content": user_message}
+        ],
+        max_tokens=120,
+        stop=["\n"]
+    )
+    return response.choices[0].message.content.strip()
+
+def text_to_speech(text, filename="output.mp3"):
+    response = client.audio.speech.create(
+        model="tts-1",
+        voice="sage",
+        input=text
+    )
+    with open(filename, "wb") as f:
+        f.write(response.content)
+    subprocess.run(["mpg123", "--gain", "1700", filename], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+
+def send_to_esp32(letter):
+    if ser is None:
+        print("Serial connection not established.")
+        return
+    
+    ser.write(letter.upper().encode('utf-8'))  # Send letter to ESP32
+    print(f"Sent to ESP32: {letter}")
+    time.sleep(0.1)  # Small delay to ensure transmission
+    while True:
+        if ser.in_waiting:
+            response = ser.readline().decode('utf-8').strip()
+            print(f"Received from ESP32: {response}")
+            if response == "Done":
+                break  # Proceed when ESP32 acknowledges completion
+
+def main():
+    if ser is None:
+        print("ESP32 is not connected. Exiting...")
+        return
+    
+    intro = generate_intro()
+    text_to_speech(intro)
+    play_signal()
+    record_audio()
+    play_processing()
+    play_processing()
+    theme = transcribe_audio()
+    stop_processing()
+    print(f"📖 Story Theme: {theme}")
+    play_processing()
+    play_processing()
+    story = generate_story(theme)
+    stop_processing()
+    print("📝 Story:", story)
+    text_to_speech(story)
+    while True:
+        selected_word = select_noun(story)
+        text_to_speech(f"Now spell the word: {selected_word}")
+        for letter in selected_word:
+            text_to_speech(f" Now we will spell the letter {letter}")
+            send_to_esp32(letter)
+        print("Good job! Well spelled.")
+        text_to_speech(generate_congratulatory_message())
+        print("🔄 Extending story...")
+        play_processing()
+        new_part = extend_story(story)
+        stop_processing()
+        story += " " + new_part
+        print("📖 Updated Story:", story)
+        text_to_speech(new_part)
+
+if __name__ == "__main__":
+    main()
+
+```
+# Cost
+| Service            | Pricing Basis          | Unit Price (USD) |
+|--------------------|-------------------------|------------------|
+| ChatGPT API (gpt-4o) | 1K tokens (input + output) | 0.005            |
+| Whisper API         | 1 minute of audio        | 0.006            |
+
+| Usage Type           | Time     | Cost (CAD) |
+|----------------------|----------|------------|
+| Basic Device Use      | 1 hour   | 1.22       |
+
+# Critical Reflection
+## ChatGPT
+ChatGPT preforms its action correctly and understands its task not through the suggested by the user message but through its role explanation. Each of the prompts were well formed and the story was not only engaging but cohesively made according to the user's request. The length without being optimized cut off sometimes in the middle of the sentence due to token limitation however, when I increased the token count and specifically assign the length of the output it stopped giving me correct and complete sentences withing the indicated boundaries. 
+## Whispers Speech System
+Whispers phenomenally vocalize stories from the ChatGPT prompts. Its voice is not only natural but also engaging, optimistic and charismatic which AI-Thinker tested in the [[10th Design Proposal]] can't match. The tonality and realism is state-of-the-art making it a very reliable choice.
+## General System Usability
+Usability of the system despite its high fidelity has trade-offs. The latency to connect to APIs is still high and depending on the internet connection can take from 30s to 2mins. Lack of threshold to detect when the user stop speaking, while recording the story theme is also a problem. It is UX problem that when the user stops its story, it is generally not indicated that the recording is still going, leading to confusion as usability problem.

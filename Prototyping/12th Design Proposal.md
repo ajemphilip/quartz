@@ -1,0 +1,72 @@
+Date : 2024-11-03
+
+# Tasks : Sanding Techniques and Finishing 3D models
+
+# Goals
+- Create high fidelity 3D model finish
+- Smooth parts of the design
+- Paint the parts
+- Test transparent 3D filament
+
+# Description
+The design proposal consists of the techniques used to make the surface of the device smooth with the final polish look. The procedure was inspired by this tutorial: https://www.youtube.com/watch?v=ZTE9bJyUO_8 The proposal also addresses the quality of print maximizing the filament use for the cost of printed support to keep the element straight during the printing process.
+# Creating
+The printed parts were washed and left to dry for around 3 hours. After that they were sanded with 60 grit sandpaper at first for around an hour to get rid of the layer lines. Then they were sanded again with 120 grit paper for another hour and after that the process was repeated with 220 grit paper. Next the sandable primer spray was applied and left to dry. The primer was sanded with 320 grit paper.  In the last step Bondo filler was applied to fix the imperfections and sanded again with 320 grit paper. Painting was done in the makerspace at York University. The power tools such as Dremel were tested to apply the first sanding to reduce the layering of the 3D print. The transparent cover was printed 2 times, one time it was sanded with the above technique and the other time it was placed into the oven to make plastic more see through.
+The results can be visible through those images
+![[IMG_6067.jpg]]
+Sanded Surface
+
+![[IMG_6068.jpg]]
+Printing Layers
+
+![[IMG_6069.jpg]]
+More visible printing layers
+
+The process was video documented:
+Dremel use - https://youtu.be/wPhVD7dPB3o
+Sanding Process - https://youtu.be/9BydfCXY-Ko
+# Cost
+| Item               | Quantity | Unit Price (CAD) | Total (CAD) |
+|--------------------|----------|------------------|-------------|
+| Sanding Sponge     | 1        | 1.99             | 1.99        |
+| Bondo Filler       | 1        | 12.99            | 12.99       |
+| Sandable Primer    | 1        | 6.59             | 6.59        |
+| **Total**          |          |                  | **21.57**   |
+## Print Settings 
+### Regular Print
+| Setting               | Values Used                  |
+|------------------------|-------------------------------|
+| Layer Height           | 0.2 mm                        |
+| Infill Density         | 30%                           |
+| Infill Pattern         | Linear                          |
+| Shells (Wall Lines)    | 5                             |
+| Top Layers             | 4                             |
+| Bottom Layers          | 3                             |
+| Print Speed            | 60 mm/s                       |
+| Travel Speed           | 90–120 mm/s                   |
+| Extruder Temperature (PLA) | 210°C                    |
+| Build Plate Temperature| 60°C                          |
+| Supports               | Enabled     |
+| Raft                   | Raft + Brim       |
+| Cooling Fan            | Enabled after 1–2 layers      |
+### Transparent Print
+| Setting               | Values Used                  |
+|------------------------|-------------------------------|
+| Layer Height           | 0.2 mm                        |
+| Infill Density         | 95%                           |
+| Infill Pattern         | Linear                          |
+| Shells (Wall Lines)    | 8                             |
+| Top Layers             | 4                             |
+| Bottom Layers          | 3                             |
+| Print Speed            | 60 mm/s                       |
+| Travel Speed           | 90–120 mm/s                   |
+| Extruder Temperature (PLA) | 215°C                    |
+| Build Plate Temperature| 60°C                          |
+| Supports               | Enabled     |
+| Raft                   | Raft + Brim       |
+| Cooling Fan            | Enabled after 1–2 layers      |
+# Critical Reflection
+Generally the process of finishing 3D prints was definitely labor intensive. It was mainly done by hand because power tools sanding speed was too high and as a result it was melting the plastic. It took around 4-5 hours to clean the even large parts and head shape took longer because of its shape complexity. Despite the effort though, head shape result wasn't very well done since sand paper couldn't pick up imperfections in hard to get spots like mouth or eyes. Despite the effort on the larger surfaces the layers were still slightly visible The whole process might be prone to injuries, especially when it comes to 3D support element after print cleaning. There were many scratches and one more major screwdriver injury. Despite that, the result of sanding certainly bring the quality of print to the higher fidelity. The user experience also improves with the smoother surface offering haptic focus on touch although, diversity of surface roughness could be beneficial too. The makerspace oven also failed to make the middle cover more transparent. It melted the entire part. The print quality is very good however the transparent cover with 95% infill was too heavy. Generally transparent filament is not really transparent which techniques to make it more see through are to be tested later. The support is hard to get rid of and add up to the cost of making since vast amount of filament is wasted to create it.
+
+# References
+_Organic Parametric Shapes: Bézier Curves in OpenSCAD_. (n.d.). Retrieved April 26, 2025, from [https://raphaelluckom.com/posts/bezier_curves.html](https://raphaelluckom.com/posts/bezier_curves.html)

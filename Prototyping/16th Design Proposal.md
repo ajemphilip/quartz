@@ -1,0 +1,484 @@
+Date : 2024-12-29
+
+# Tasks : ESP32 Code Modification into Functions and Response According to UART. Pin Extender connection. Formation of Braille Letters.
+
+# Goals
+- Contain the millis, touch sensor and button code to functions with ChatGPT
+- Use former successful experiments e.g. aluminum foil sensor, N10 motors and button clicks in single setup
+- Use Pin Extender
+- Form the automatic up movement on trigger with UART and button click downwards movement
+- Form initial upwards movement to test pins after device turns on
+- Form braille letters in the code
+
+# Description
+The proposal aims to assemble a final usable ESP32 electronic device according to researched knowledge to discover more flaws of complete setup. The setup will behave like the final device without the interactive storytelling part tested on the simple UART connection. User types a letter in Raspberry PI Zero 2 W and ESP32 receives it, moves the pin up and user has to press all of them down to send the message back to Raspberry PI. The proposal tests general robustness of the system and prepares it for the final interactive usability with ChatGPT and Whispers speech system. Because of the system complexity ESP32 S3 had insufficient number of pins therefore the extension board was necessary to add. 
+# Prototyping
+The device was created using ESP32-S3-dev module, TB6612FNG Motor Controller, Adafruit MCP23017 I2C GPIO Expander Breakout, 6 buttons and 6 aluminum foil sensors. Because PWM pins require analog output the PMW pins were connected designed to be directly to the ESP32, along with touch sensors and buttons, while other motor controller pins which control movement direction were designed to be plugged into the extension board. 
+IMAGE
+## ESP32-S3-dev module Code
+Esp32 which used millis seen in [[9th Design Proposal]] and touch sensor codes were inputted into ChatGPT to test usability of Large Language Models when it comes to creation and code modifications. ChatGPT received a specific instruction about the device specification including new extension board usage per multiple iterations for example
+>
+The whole system works the way that the user hears the story from other device. That other device send a signal as the letter and then this letter enables motors to move forward. To move them backward to original position the user has to click the button. The motors then will move as long as it hits the capacitive sensor - then it stops. The program should control which buttons were moved up and with the button click and touch ensure that all the buttons that user clicked returned to original positions. When they are in the original positions they will send the signal back to the device with the word "Done" . Here is my code:
+
+or
+>can i use MCP23017 for motor controll ?
+
+
+or
+>
+I have 3 6612FNG motor controllers : write the code to imitate this sketch and assign the if statements in the methods to operate every motor separately
+
+### Resulting Code
+```
+#include <Wire.h>
+#include <Adafruit_MCP23X17.h>
+#include <HardwareSerial.h>
+
+HardwareSerial mySerial(1);
+Adafruit_MCP23X17 mcp;
+
+int STBY = 7;
+int PWM[6] = { 19, 20, 21, 47, 48, 0 };
+const int motorDirPins1[6] = { 0, 1, 2, 3, 4, 5 };
+const int motorDirPins2[6] = { 8, 9, 10, 11, 12, 13 };
+const int buttonPins[6] = { 36, 37, 38, 39, 40, 41 };
+const int touchPins[6] = { 1, 13, 4, 5, 6, 14 };
+const int touchThreshold = 80;
+
+unsigned long motorStartTimes[6] = { 0 };
+int touchInitial[6] = { 0 };
+
+bool motorIteration[6] = { false };
+bool buttonPressed[6] = { false };
+bool touchDetected[6] = { false };
+bool motorMovingDown[6] = { false };
+bool motorDown[6] = { false };
+bool taskActivated = false;
+bool taskDone = false;
+char receivedChar = ' ';
+
+void setup() {
+  Serial.begin(9600);
+  mySerial.begin(115200, SERIAL_8N1, 16, 17);
+
+  Wire.begin(8, 9);
+  if (!mcp.begin_I2C(0x20)) {
+    Serial.println("MCP23017 not detected!");
+    while (1)
+      ;
+  }
+
+  pinMode(STBY, OUTPUT);
+  digitalWrite(STBY, HIGH);
+
+  for (int i = 0; i < 6; i++) {
+    pinMode(PWM[i], OUTPUT);
+    digitalWrite(PWM[i], LOW);
+    pinMode(buttonPins[i], INPUT_PULLUP);
+    mcp.pinMode(motorDirPins1[i], OUTPUT);
+    mcp.pinMode(motorDirPins2[i], OUTPUT);
+  }
+  moveAllMotorsUp();
+  calibrateTouchSensors();
+  moveMotorsToTouchSensors();
+}
+
+void calibrateTouchSensors() {
+  for (int i = 0; i < 6; i++) {
+    touchInitial[i] = touchRead(touchPins[i]) / 100;
+  }
+}
+
+void moveAllMotorsUp() {
+  for (int i = 0; i < 6; i++) {
+    moveForward(i);
+  }
+  delay(1000);
+  stopAllMotors();
+}
+
+void moveMotorsToTouchSensors() {
+  for (int i = 0; i < 6; i++) {
+    moveBackward(i);
+    while (touchRead(touchPins[i]) / 100 <= touchInitial[i] + 10) {
+      delay(5);
+    }
+    stopMotor(i);
+    motorDown[i] = true;
+  }
+}
+
+void loop() {
+  Serial.print("Motor status: ");
+  for (int i = 0; i < 6; i++) {
+    Serial.print("M");
+    Serial.print(i);
+    Serial.print(":");
+    Serial.print(motorDown[i]);
+    Serial.print(",");
+  }
+  Serial.println();
+  checkMotorTimers();
+  checkSerialInput();
+  checkButtons();
+  checkTouchSensors();
+  checkAllMotorsDown();
+  delay(100);
+}
+
+void checkMotorTimers() {
+  for (int i = 0; i < 6; i++) {
+    // if (motorMovingDown[i] && !touchDetected[i]) {
+    //     moveBackward(i);
+    // }
+    if (motorStartTimes[i] > 0 && (millis() - motorStartTimes[i] >= 1500)) {
+      //       for (int i = 0; i < 6; i++) {
+      //    touchInitial[i] = touchRead(touchPins[i])/100;
+      // }
+      stopMotor(i);
+    }
+  }
+}
+
+void checkSerialInput() {
+  if (mySerial.available()) {
+    receivedChar = mySerial.read();
+    executeLetterCommand(receivedChar);
+    receivedChar = ' ';
+  }
+}
+
+void checkButtons() {
+  for (int i = 0; i < 6; i++) {
+    Serial.println(digitalRead(buttonPins[i]));
+    if (digitalRead(buttonPins[i]) == LOW && !motorMovingDown[i]) {
+      moveBackwardUntilTouch(i);
+      Serial.println(digitalRead(buttonPins[i]));
+    }
+  }
+}
+
+void moveBackwardUntilTouch(int motorIndex) {
+  motorMovingDown[motorIndex] = true;
+  mcp.digitalWrite(motorDirPins1[motorIndex], LOW);
+  mcp.digitalWrite(motorDirPins2[motorIndex], HIGH);
+  analogWrite(PWM[motorIndex], 255);
+
+  while (touchRead(touchPins[motorIndex]) / 100 <= touchInitial[motorIndex] + 10) {
+    delay(5);
+  }
+
+  stopMotor(motorIndex);
+}
+
+void checkTouchSensors() {
+  for (int i = 0; i < 6; i++) {
+    Serial.println(touchRead(touchPins[i]) / 100);
+    if (motorMovingDown[i] && touchRead(touchPins[i]) / 100 > touchInitial[i] + 10) {
+      touchDetected[i] = true;
+      stopMotor(i);
+    }
+  }
+}
+
+void checkAllMotorsDown() {
+  bool allDown = true;
+  for (int i = 0; i < 6; i++) {
+    if (!motorDown[i]) {
+      allDown = false;  // If any motor is still moving, we wait
+      break;
+    }
+  }
+
+  if (allDown && taskActivated) {  // Only send "Done" if a task was running
+    Serial.println("All motors are down! Sending job completion message.");
+    mySerial.println("Done");
+    taskActivated = false;  // Reset task flag
+    taskDone = false;
+  }
+}
+
+
+void moveForward(int motorIndex) {
+  motorStartTimes[motorIndex] = millis();
+  motorIteration[motorIndex] = true;
+  mcp.digitalWrite(motorDirPins1[motorIndex], HIGH);
+  mcp.digitalWrite(motorDirPins2[motorIndex], LOW);
+  analogWrite(PWM[motorIndex], 255);
+  taskActivated = true;
+  motorDown[motorIndex] = false;
+}
+
+void moveBackward(int motorIndex) {
+  motorMovingDown[motorIndex] = true;
+  mcp.digitalWrite(motorDirPins1[motorIndex], LOW);
+  mcp.digitalWrite(motorDirPins2[motorIndex], HIGH);
+  analogWrite(PWM[motorIndex], 255);
+}
+
+void stopMotor(int motorIndex) {
+  if (motorMovingDown[motorIndex]) {
+    motorDown[motorIndex] = true;
+  }
+  motorIteration[motorIndex] = false;
+  motorMovingDown[motorIndex] = false;
+
+  mcp.digitalWrite(motorDirPins1[motorIndex], LOW);
+  mcp.digitalWrite(motorDirPins2[motorIndex], LOW);
+  analogWrite(PWM[motorIndex], 0);
+}
+
+void stopAllMotors() {
+  for (int i = 0; i < 6; i++) {
+    stopMotor(i);
+  }
+}
+
+void executeLetterCommand(char letter) {
+  switch (letter) {
+    case 'A': letterA(); break;
+    case 'B': letterB(); break;
+    case 'C': letterC(); break;
+    case 'D': letterD(); break;
+    case 'E': letterE(); break;
+    case 'F': letterF(); break;
+    case 'G': letterG(); break;
+    case 'H': letterH(); break;
+    case 'I': letterI(); break;
+    case 'J': letterJ(); break;
+    case 'K': letterK(); break;
+    case 'L': letterL(); break;
+    case 'M': letterM(); break;
+    case 'N': letterN(); break;
+    case 'O': letterO(); break;
+    case 'P': letterP(); break;
+    case 'Q': letterQ(); break;
+    case 'R': letterR(); break;
+    case 'S': letterS(); break;
+    case 'T': letterT(); break;
+    case 'U': letterU(); break;
+    case 'V': letterV(); break;
+    case 'W': letterW(); break;
+    case 'X': letterX(); break;
+    case 'Y': letterY(); break;
+    case 'Z': letterZ(); break;
+    default: break;
+  }
+}
+
+
+void letterA() {
+  moveForward(0);
+}
+
+void letterB() {
+  moveForward(0);
+  moveForward(2);
+}
+
+void letterC() {
+  moveForward(0);
+  moveForward(1);
+}
+
+void letterD() {
+  moveForward(0);
+  moveForward(1);
+  moveForward(3);
+}
+
+void letterE() {
+  moveForward(0);
+  moveForward(3);
+}
+void letterF() {
+  moveForward(0);
+  moveForward(1);
+  moveForward(2);
+}
+void letterG() {
+  moveForward(0);
+  moveForward(1);
+  moveForward(2);
+  moveForward(3);
+}
+void letterH() {
+  moveForward(0);
+  moveForward(2);
+  moveForward(3);
+}
+void letterI() {
+  moveForward(1);
+  moveForward(2);
+}
+void letterJ() {
+  moveForward(1);
+  moveForward(2);
+  moveForward(3);
+}
+void letterK() {
+  moveForward(0);
+  moveForward(4);
+}
+void letterL() {
+  moveForward(0);
+  moveForward(2);
+  moveForward(4);
+}
+void letterM() {
+  moveForward(0);
+  moveForward(1);
+  moveForward(2);
+}
+void letterN() {
+  moveForward(0);
+  moveForward(1);
+  moveForward(3);
+  moveForward(4);
+}
+void letterO() {
+  moveForward(0);
+  moveForward(3);
+  moveForward(4);
+}
+void letterP() {
+  moveForward(0);
+  moveForward(1);
+  moveForward(2);
+  moveForward(4);
+}
+void letterQ() {
+  moveForward(0);
+  moveForward(1);
+  moveForward(2);
+  moveForward(3);
+  moveForward(4);
+}
+void letterR() {
+  moveForward(0);
+  moveForward(2);
+  moveForward(3);
+  moveForward(4);
+}
+void letterS() {
+  moveForward(1);
+  moveForward(2);
+  moveForward(4);
+}
+void letterT() {
+  moveForward(1);
+  moveForward(2);
+  moveForward(3);
+  moveForward(4);
+}
+void letterU() {
+  moveForward(0);
+  moveForward(4);
+  moveForward(5);
+}
+void letterV() {
+  moveForward(0);
+  moveForward(2);
+  moveForward(4);
+  moveForward(5);
+}
+void letterW() {
+  moveForward(1);
+  moveForward(2);
+  moveForward(3);
+  moveForward(5);
+}
+void letterX() {
+  moveForward(0);
+  moveForward(1);
+  moveForward(4);
+  moveForward(5);
+}
+void letterY() {
+  moveForward(0);
+  moveForward(1);
+  moveForward(3);
+  moveForward(4);
+  moveForward(5);
+}
+void letterZ() {
+  moveForward(0);
+  moveForward(3);
+  moveForward(4);
+  moveForward(5);
+}
+```
+
+## Raspberry PI Zero 2 W Code
+Raspberry PI code was created only for testing to see and understand the interaction between devices. The code creation process also used ChatGPT on the code from [[15th Design Proposal]] with the prompt:
+> based on this code write a communication when the user type on the keyboard a letter it send it to ESP32 and wait till the ESP32 send the message "Done" to continue
+```
+import serial
+import time
+
+ser = serial.Serial("/dev/serial0", baudrate=115200, timeout=1)
+
+time.sleep(2)  # Allow ESP32 to initialize
+print("🔌 Raspberry Pi UART Ready")
+
+while True:
+    try:
+        # Get user input
+        user_input = input("Type a letter to send to ESP32 (or type 'exit' to quit): ").strip()
+
+        if user_input.lower() == "exit":
+            print("Exiting communication.")
+            break
+
+        if len(user_input) != 1 or not user_input.isalpha():
+            print("❗ Please enter a single alphabetical letter.")
+            continue
+
+        # Send the letter to ESP32
+        ser.write((user_input + "\n").encode())
+        print(f"📤 Sent: {user_input}")
+
+        # Wait for "Done" response
+        while True:
+            if ser.in_waiting > 0:
+                raw_data = ser.readline()
+                decoded_data = raw_data.decode("utf-8", errors="ignore").strip()
+                print(f"📥 Received: {decoded_data}")
+
+                if decoded_data == "Done":
+                    print("✅ ESP32 confirmed action complete.\n")
+                    break
+
+    except Exception as e:
+        print(f"UART Error: {e}")
+        break
+
+```
+# Creating
+The pins were printed according to the [[10th Design Proposal]] and buttons were printed according to [[7th Design Proposal]]. The finished casing was taken from [[12th Design Proposal]] and all the preciously printed parts were assembled.
+
+The systems were connected according to the following diagram: 
+![[final diagram.png]]
+# Cost
+| Item                                         | Quantity | Unit Price (CAD) | Total (CAD) |
+|----------------------------------------------|----------|------------------|-------------|
+| Screws (M5)                                  | 6        | 0.1155           | 0.693       |
+| Motors (N10)                                 | 6        | 3.48             | 20.88       |
+| Motor Controllers (TB6612FNG)                | 3        | 0.72             | 2.16        |
+| ESP32-S3                                     | 1        | 8.67             | 8.67        |
+| Raspberry Pi Zero 2 W                        | 1        | 22.72            | 22.72       |
+| Wires                                        | 1        | 1.45             | 1.45        |
+| Extension Board (Adafruit MCP23017 I2C GPIO Expander) | 1 | 8.48           | 8.48        |
+| USB Extender                                 | 1        | 1.45             | 1.45        |
+| USB Sound Card                               | 1        | 1.45             | 1.45        |
+| Filament                                     | 1        | 14.00            | 14.00       |
+| USB Cables                                   | 2        | 1.45             | 2.90        |
+| Buttons (Red Long)                           | 6        | 0.391            | 2.346       |
+| Aluminum Foil                                | 1 roll   | 1.50             | 1.50        |
+| **Total**                                    |          |                  | **88.70**   |
+
+# Critical Reflection
+## Device
+The system forms a very cohesive setup for a large braille cell concept. UART connection works perfectly fine with both receiving and sending the messages. The pins correctly move up and down without any motor blocks or other flaws. The button click is functional and correctly moves the pins down with the touch sensor flawlessly stops motor in time preventing its block. General feeling of the casing is smooth with clear indicator which pins moved up. ESP32 and Raspberry PI work very weill in the setup with no delays and detected flaws. 
+## ChatGPT
+ChatGPT performed well as a creation tool, especially in delivering final outcomes. The bugs were most of the time easilly solvable through long iterative prompting and it performed its taks generally well. Obtaining the final version of the code was quite challenging, necessitating numerous iterations where I had to explain what wasn't working. Often, the issues stemmed from simple bugs in the code, but there were also instances of outdated library code from earlier versions or misunderstandings of the task. Additionally, editing sometimes led to partial deletions of functions or code segments, rendering the entire setup un-compilable. While it was able to restore the code to the correct version upon pointing out errors, it often inadvertently deleted other sections. This issue arose frequently and was typically resolved by opening a new chat and repeating the process. Overall, the hardware setup was mostly understood correctly, but with the ESP32-S3, it struggled to comprehend its pin capabilities and locate the correct pinout. Working with ChatGPT necessitates many iterations and clarifications, particularly during debugging on single-board computers or microcontrollers, where the code needs to be saved as a Python file or uploaded directly.

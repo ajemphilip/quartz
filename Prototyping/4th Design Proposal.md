@@ -1,0 +1,244 @@
+Date : 2024-07-28
+
+# Tasks : Improving modular pin click attachments, new pin blocking spring solution testing. Selection of alternative solutions to the motor.
+
+# Goals
+- Test more advanced pin block solution using conductivity and springs
+- Improve pin click stability through addition of extra attachments
+- Add attachments to add further modular braille pin attachments and attach button to top pin
+- Search for alternative solutions for the pin motor
+# Description
+The following design proposal aims to again solve the pin blocking by not only apply the spring possibility but also search for other alternatives in terms of simpler motor construction. It also aims to improve the stability of the click pin construction. The research also reveals the possibilities of new motor options and other movement solutions in case the default 9V DC motor will fail to accommodate pin movement. 
+# Prototyping
+![[PENUP_20250425_200425.jpg]]
+Button Attachment Sketch
+## Pin Click
+The pin click works quite well but when the click is a bit tilted the top holder slips out. It definitely needs more stability. To solve that there has to be some constraints added to hold the button tighter between bottom tray and top holder. 
+
+To accommodate that two rails were added to the top tray to click in and block it from falling out even if the pressure is applied.
+Video of the problem: https://youtube.com/shorts/M2PEHpuW5RU
+
+### The bottom tray 
+The bottom tray was modified to accommodate the modularity by addition of the socket to attach it to the top pin.
+#### Image
+![[Pasted image 20240805201126.png]]
+Bottom holder with added socket.
+#### Code
+```
+  module bottomTrayCube () {
+    difference(){
+    cube([15,20,5],center=true);
+    cube([13,18,10],center=true);
+    }
+    cube([14,5,2],center=true);
+    }
+       
+    difference () {
+    bottomTrayCube ();
+    cube([13,1.5,3],center=true);
+        }
+        translate([0,9.1,0])
+     sphere(r = 1);
+         translate([0,-9.1,0])
+     sphere(r = 1);
+        
+        translate([0,1.6,-3.2])
+        cube([14,1.8,5],center=true);
+        
+        translate([0,-1.6,-3.2])
+        cube([14,1.8,5],center=true);
+        
+        
+        translate([0,0,-9])
+        cube([12,13,10],center=true);
+```
+### Braille Cap
+#### Image
+![[Pasted image 20250412123738.png]]
+#### Code
+```
+```
+### Button Transfer
+#### Image
+![[Pasted image 20250411220943.png]]
+Button Transfer Image
+#### Code
+```
+module buttonTransfer() {
+    difference (){
+    cube([5.6,5.6,5.6],center=true);
+    translate([0,0,2])
+    cube([4.2,4.2,3.9],center=true);
+    translate([0,0,-2])
+    cube([4.2,4.2,3.9],center=true);
+    }
+    }
+buttonTransfer();
+```
+### The top holder
+The top holder has now additional rail which will block on bottom tray to keep the button steadily in place.
+#### Image
+![[Pasted image 20240805202254.png]]
+Added rail to the top holder.
+#### Code
+```
+  module topHolder () {
+difference() {
+	cube([12.5,17,10],center=true);
+    translate([0,0,-2.5])
+    cube([15,13,10],center=true);
+    cube([8,8,12],center=true);
+    }
+		}
+//Taken from - https://github.com/openscad/MCAD/blob/master/triangles.scaz             
+module triangle(o_len, a_len, depth, center=true) {
+    centroid = center ? [-a_len/3, -o_len/3, -depth/2] : [0, 0, 0];
+    translate(centroid) linear_extrude(height=depth) {
+        polygon(points=[[0,0],[a_len,0],[0,o_len]], paths=[[0,1,2]]);
+    }     
+}
+
+rotate([90,90,90])
+translate([4.5,8,0])    
+triangle(3,2,12);
+rotate([-90,90,90])
+translate([4.5,8,0])    
+triangle(3,2,12);      
+topHolder();
+```
+
+### Top Pin 
+Top pin's top attachment cube has also been changed (Fig 3) to the attachment socket to firmly without any adhesives put button on top of the pin.
+#### Images
+![[Pasted image 20240805203046.png]]
+Top pin attachment changed.
+#### Code
+```
+module dcMotorHolder() {
+  rotate([0, 180, 0]) difference() {
+    cylinder(61, 17, 17, $fn = 100);
+    translate([0, 0, 7]) cylinder(60, 15, 15);
+  }
+}
+
+module elasticBreakLeft() {
+  translate([12, 0, -35]) rotate([0, 0, 90]) cube([3, 10, 65], center = true);
+}
+
+module elasticBreakRight() {
+  translate([-12, 0, -35]) rotate([0, 0, 90]) cube([3, 10, 65], center = true);
+}
+
+module transferCube() {
+  translate([0, 0, 16]) cube([14, 15, 33], center = true);
+}
+
+module negatePin() {
+  cylinder(100, 4, 4, $fn = 100);
+}
+module unionized() {
+  union() {
+    dcMotorHolder();
+    transferCube();
+  }
+}
+difference() {
+  unionized();
+  translate([0, 0, -4]) cylinder(7, 7.5, 7.5, $fn = 6, center = true);
+  cylinder(63, 5, 5, $fn = 100, center = true);
+  translate([0, 0, 0]) elasticBreakLeft();
+  elasticBreakRight();
+}
+difference() {
+  translate([0, 0, 33]) cube([14, 15, 12], center = true);
+  translate([0, 0, 31]) cube([12, 13, 18], center = true);
+}
+```
+### Shaft block and spring solution
+The shaft block was design in a mechanical engineering fashion. The idea was to put the spring at the ends of the shaft to make the nut rotation, especially at the ending of the thread, softer, reduce the friction using very small small wire surface as well as to give the tension to rotate the screw the other way to help the motor to move the nut once again. Then the spring surface is touched the motor suppose to end its work and make less friction. That should result in easier other way rotation and solve the blocking problems. The 3D printed limiter for screw ending, has a cavity to keep the spring in place to support the nut when necessary. The spring also supposed perform capacitive sensor function. Capacitive sensor was created to test future possible click functionality as well as to trigger the motor movement.
+
+Tutorials used : 
+Capacitive Touch : https://www.youtube.com/watch?v=pTSBXSCFBPs
+DC Motor : https://www.youtube.com/watch?v=XrJ_zLWFGFw
+
+#### Code
+```
+#include <CapacitiveSensor.h>
+CapacitiveSensor capSensor = CapacitiveSensor(4, 2);
+
+int pin = 9;
+
+void setup() {
+
+  Serial.begin(9600);
+
+  pinMode(pin, OUTPUT);
+}
+void loop() {
+
+  long sensorValue = capSensor.capacitiveSensor(30);
+
+  if (sensorValue > 500) {
+    digitalWrite(pin, HIGH);
+  } else {
+    digitalWrite(pin, LOW);
+  }
+  Serial.println(sensorValue);
+  delay(10);
+}
+```
+
+## Other motors researched
+### Geared Motor
+The option to consider, with lower rpm and more torque is geared motor. Geared motor lower rpm should provide more control over spinning and pause timing as well as provide twice as much torque. That possibly can solve the blocking problem along with other friction reducing solutions to give full motoric control over pin movement without disruptions. The selection was made to purchase lower and higher rpm motors with different power.
+The following were selected to purchase: 
+
+[# N10 Mini Gear Motor Large Torque DC 3V 2150RPM](https://ca.robotshop.com/products/e-s-motor-n10-mini-gear-motor-large-torque-dc-3v-2150rpm)
+[# N10 Mini Gear Motor Large Torque DC 3V 1080RPM](https://ca.robotshop.com/products/e-s-motor-n10-mini-gear-motor-large-torque-dc-3v-1080rpm)
+[Strait Type Reduce DC Motor 3V, 3kgf.cm - RobotShop](https://ca.robotshop.com/products/strait-type-reduce-dc-motor-3v-3kgfcm)
+### Servo
+Servo motor with 3D printed actuator possibility seems to be good option. The only issue with the previously tested prototype was that it was a bit jittery. On the other hand, its definitely easier to assemble as well as provide simple solution to pin movement.
+[Kitronik Linear Actuator Micro Servo Kit - RobotShop](https://ca.robotshop.com/products/kitronik-linear-actuator-micro-servo-kit)
+Video:
+https://www.youtube.com/watch?v=MKrdxJDplww
+
+# Creating
+## Printer Malfunction
+Because of the printer malfunction - possible extruder jam - the physical prototyping was postponed until MakerBot replicator+ 3D printer will be fixed.
+
+## Shaft Block Conductive Spring
+The prototype was made with Arduino. All the electronic components were connected according to the diagram. After connection the system was working as intended with some flaws that will be addressed in the critical reflection. 
+The element to block the screw was 3D printed.
+
+The electronic components were connected according to this diagram: 
+![[Pasted image 20240807133400.png]]
+>[!INFO]
+>The button is a mockup for male wire end for capacitive touch sensing
+
+![[Pasted image 20240807155350.png|350]]![[Pasted image 20240807155636.png|350]]
+Overview of live electronic setup
+
+![[Pasted image 20240807155704.png]]
+Motor with screw at the bottom
+# Cost
+| Item             | Description          | Unit Price (CAD) |
+|------------------|----------------------|------------------|
+| DC Motor (9V)        | 9V motor              | 4.13             |
+| Filament         | Per spool             | 14.00            |
+| Screw and Nut (M5)   | Per unit              | 0.1155           |
+| Spring           | Per unit              | 0.163            |
+| Arduino Uno      | Microcontroller       | 39.75            |
+| **Total**        |                      | **58.1585**      |
+# Critical Reflection
+## Spring solution to shaft block
+Unfortunately the spring solution failed the expectations because of numerous reasons;
+1) The capacitive sensor requires to be grounded to be activated. Unfortunately the screw nor the motor pin is not grounded therefore the electric conductivity did not happen. It would be very difficult to solve that problem because the wire has to be attached to the screw which rotates what will create additional unreliability problems in the future. 
+	- Video: https://www.youtube.com/watch?v=v6OeicJQVk4
+2) The spring doesn't protect the nut from blocking. If the spiring attached is too hard the nut blocks either because of the hardness of the material or because of the sharpness of the spring towards its end. On the other hand, if the spring is too soft, the nut bends the spring which is being blocked on the screw's thread what create problem of friction similar to the original problem. 
+	- Video: https://youtube.com/shorts/BPWcOekJZYU
+To sum up, new motor with some slippery material on both ends of the screw or new solution to pin movement seems like the best option in this particular case.
+
+# References
+_Make a Triangle in OpenSCAD Using Various Methods_. (n.d.). Retrieved April 26, 2025, from [https://pyihub.org/triangle-in-openscad/](https://pyihub.org/triangle-in-openscad/)
+
+_Arduino Capacitive Touch Sensing! - YouTube_. (n.d.). Retrieved April 26, 2025, from [https://www.youtube.com/watch?v=pTSBXSCFBPs](https://www.youtube.com/watch?v=pTSBXSCFBPs)
