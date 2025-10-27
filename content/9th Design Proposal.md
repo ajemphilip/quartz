@@ -638,10 +638,10 @@ ESP32 was connected according to this diagram:
 ![[6 Motors Diagram 1.png]]
 
 The elements were 3D printed, motors were put inside the pins and the entire device was assembled and tested.
-![[IMG_6671.jpg]]
+![[public/Media/IMG_6671.jpg]]
 Pins and Electronic Setup
 
-![[IMG_6672.jpg]]
+![[public/Media/IMG_6672.jpg]]
 Electronic Components
 
 ## Print Settings 

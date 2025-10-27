@@ -350,13 +350,13 @@ mount();
 # Creating
 All the elements were 3D printed and assembled together. Middle cover was printed using transparent filament twice with different print settings.
 
-![[IMG_6718.jpg]]
+![[public/Media/IMG_6718.jpg]]
 Head Holder Attachment
 
-![[IMG_6716.jpg]]
+![[public/Media/IMG_6716.jpg]]
 Cow Head
 
-![[IMG_6717.jpg]]
+![[public/Media/IMG_6717.jpg]]
 Tail Attachment
 
 ![[Pasted image 20250411214440.png]]

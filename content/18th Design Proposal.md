@@ -141,10 +141,10 @@ minkowski() {
 ```
 # Creating
 The device was assembled and cables were additionally secured with the net around the circumference. To accommodate holes for other cables that need to be attached to the computer, the soldering iron was used to melt the plastic. 
-![[IMG_6873.jpg]]
+![[public/Media/IMG_6873.jpg]]
 Cable Blocker Part
 
-![[IMG_6872.jpg]]
+![[public/Media/IMG_6872.jpg]]
 Cable Blocker Attached
 
 ## Print Settings 

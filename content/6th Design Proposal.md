@@ -234,9 +234,9 @@ Button component is a generic electronic button but slightly larger in size.
 # Creating
 ## 3D Printed Elements
 ### Bottom Pin
-![[IMG_6699.jpg]]
+![[public/Media/IMG_6699.jpg]]
 ### Top Pin Casing
-![[IMG_6702.jpg]]
+![[public/Media/IMG_6702.jpg]]
 ### Braille Cap
 ![[Pasted image 20250411144500.png]]
 

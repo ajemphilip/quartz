@@ -13,13 +13,13 @@ The design proposal consists of the techniques used to make the surface of the d
 # Creating
 The printed parts were washed and left to dry for around 3 hours. After that they were sanded with 60 grit sandpaper at first for around an hour to get rid of the layer lines. Then they were sanded again with 120 grit paper for another hour and after that the process was repeated with 220 grit paper. Next the sandable primer spray was applied and left to dry. The primer was sanded with 320 grit paper.  In the last step Bondo filler was applied to fix the imperfections and sanded again with 320 grit paper. Painting was done in the makerspace at York University. The power tools such as Dremel were tested to apply the first sanding to reduce the layering of the 3D print. The transparent cover was printed 2 times, one time it was sanded with the above technique and the other time it was placed into the oven to make plastic more see through.
 The results can be visible through those images
-![[IMG_6067.jpg]]
+![[public/Media/IMG_6067.jpg]]
 Sanded Surface
 
-![[IMG_6068.jpg]]
+![[public/Media/IMG_6068.jpg]]
 Printing Layers
 
-![[IMG_6069.jpg]]
+![[public/Media/IMG_6069.jpg]]
 More visible printing layers
 
 The process was video documented:

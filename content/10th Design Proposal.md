@@ -303,22 +303,22 @@ The functionality is recorded in this video
 https://youtu.be/_ngmXNRcRPc
 
 ## The final setup is showcased on the picture: 
-![[IMG_6714.jpg]]
+![[public/Media/IMG_6714.jpg]]
 Aluminum Foil at Bottom Pin
 
-![[IMG_6710.jpg]]
+![[public/Media/IMG_6710.jpg]]
 Aluminum Foil Full PIn
 
-![[IMG_6708.jpg]]
+![[public/Media/IMG_6708.jpg]]
 Ai-Thinker VC02 and Pin
 
-![[IMG_6712.jpg]]
+![[public/Media/IMG_6712.jpg]]
 Motor and Sensor
 
-![[IMG_6713.jpg]]
+![[public/Media/IMG_6713.jpg]]
 Aluminum Foil Top Pin Casing
 
-![[IMG_6715.jpg]]
+![[public/Media/IMG_6715.jpg]]
 Aluminum Foil Bottom Pin wiring
 
 ## Print Settings 

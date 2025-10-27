@@ -14,13 +14,13 @@ The design proposal introduces 3 new other buttons that might perform better in 
 ## Buttons
 Three additional deeper click buttons were selected for the mockup press test.
 
-![[IMG_6706.jpg]]
+![[public/Media/IMG_6706.jpg]]
 Smaller Green Cap Button
 
-![[IMG_6705.jpg]]
+![[public/Media/IMG_6705.jpg]]
 Large Red Cap Button
 
-![[IMG_6707.jpg]]   
+![[public/Media/IMG_6707.jpg]]   
 Smaller Red Cap Button
  
 ## Smaller Green Cap Button

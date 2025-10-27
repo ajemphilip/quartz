@@ -207,13 +207,13 @@ minkowski() {
 The elements were 3D printed with Makerbot Replicator+ and photographed to reflect on the physical traits.
 Images of casing:
 ## Bottom Cover
-![[IMG_6687.jpg]]
+![[public/Media/IMG_6687.jpg]]
 ## Top Cover
-![[IMG_6692.jpg]]
+![[public/Media/IMG_6692.jpg]]
 ## Middle Cover
-![[IMG_6691.jpg]]
+![[public/Media/IMG_6691.jpg]]
 ## Assembled Setup
-![[IMG_6870.jpg]]
+![[public/Media/IMG_6870.jpg]]
 ## Print Settings 
 | Setting               | Values Used                  |
 |------------------------|-------------------------------|

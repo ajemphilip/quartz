@@ -310,16 +310,16 @@ void loop() {
 ## 3D Printing
 The casing module was 3d printed, assembled and empirically tested.
 The braille pins including pins casings, braille caps and buttons were taken from the previous design. 
-![[IMG_4555.jpg]]
+![[public/Media/IMG_4555.jpg]]
 Mini Casing With Pins
 
-![[IMG_4558.jpg]]
+![[public/Media/IMG_4558.jpg]]
 Mini Casing Top and Bottom Casings
 
-![[IMG_4557.jpg]]
+![[public/Media/IMG_4557.jpg]]
 Mini Casing Components
 
-![[IMG_4552.jpg]]
+![[public/Media/IMG_4552.jpg]]
 Braille Caps
 
 ![[Pasted image 20250413233045.png]]
