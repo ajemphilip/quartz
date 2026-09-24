@@ -13,6 +13,9 @@ The redesign had four aims that run through all ten steps.
 - Put the computer, the drivers and the power inside one casing and run it from a power bank
 - Keep tuning the printed fits one number at a time, and keep every version
 
+![[MooMooRedesign_00_device_exploded.png]]
+The redesigned device taken apart in OpenSCAD. 1 bottom shell, 2 Raspberry Pi on its sliding plate, 3 the six actuator modules, 4 middle shell, 5 power bank in its pocket, 6 the two speakers, 7 top shell, 8 key, 9 head. The Pi, the power bank and the speakers are drawn as plain blocks of the size the sources allow for, everything else is imported from the SCAD files of May 2026
+
 ## How this workbook was written
 The steps were reconstructed from the project folder and not from a diary. Every dimension comes from an OpenSCAD source file, every print setting from a PrusaSlicer project, every electrical rule from the Pi code, and every date from the time a file was last saved, converted to Toronto time. The folder holds 175 design files, 47 OpenSCAD sources, 123 STL exports and 5 slicer projects, and 77 source files of Pi code and setup app. The images were rendered in OpenSCAD 2021.01 with the BOSL2 library from the same sources at a lower resolution. Parts are coloured orange and blue because those are the filament colours stored in the slicer projects. Where an image contains something that is not in the source files, such as the outline of a Raspberry Pi or a block standing in for the power bank, the caption says so.
 
