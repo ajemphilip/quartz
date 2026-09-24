@@ -1,5 +1,3 @@
-
-
 # Moo Moo 🐄  
 *A Research-Creation Project in DIY Assistive Storytelling*
 
@@ -8,6 +6,13 @@ It combines **Braille pin actuation**, **voice interaction**, and **AI-generated
 
 This project extends questions raised in my Major Research Project at York University:  
 *How can a child’s tactile reading device become a **collaborative character** — one that listens, responds, surprises, and learns alongside them?*
+
+---
+
+## Workbooks
+- [[MooMoo/index|MooMoo Workbook, steps 0 to 19]]. July 2024 to January 2025. From a single motorised pin to a talking six dot braille cell
+- [[MooMoo Redesign/index|MooMoo Redesign Workbook, steps 20 to 29]]. November 2025 to July 2026. Printed modular actuators, a three part casing, and a Raspberry Pi with a power bank inside the device
+- [[DIY Tutorial]]
 
 ---
 

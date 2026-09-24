@@ -1,0 +1,81 @@
+---
+title: MooMoo Workbook, steps 0 to 19
+---
+
+# MooMoo Workbook, steps 0 to 19
+The first workbook of the Moo Moo project, written between July 2024 and January 2025. Each step follows the same order of sections, Goals, Description, Prototyping, Creating, Cost, Critical Reflection and References. The goals below are quoted from each step. The second workbook continues with steps 20 to 29 in [[MooMoo Redesign/index|MooMoo Redesign Workbook]].
+
+## Steps
+- [[0. Justification and Introduction]] (2024-07-06)
+- [[1. A first physical pin prototype with casing mechanism]] (2024-07-07)
+    - Test usability of prepared casing for assessment of pin movement smoothness and effectiveness with the active DC motor.
+    - Test modularity and difficulty of 3D design and printing of the components with more advanced movement approach.
+    - Empirical assessment of first 3D printed prototype casing and its materiality
+    - Assess to what extent 3D printing can be precise to avoid adhesives to assemble the pin/device
+- [[2. Pin Block and Movement Solutions. Device exterior pin holder casing preparation]] (2024-07-14)
+    - Consider options for and prototype possible click functionality of the pin system
+    - Prototype and visualize the device casing with consideration to most comprehensible accommodation of braille cell
+- [[3. Design a button which is placed on top of the pin.]] (2024-07-21)
+    - Design and materialize the pin click prototype to be attached at the top pin
+- [[4.  Improving modular pin click attachments, new pin blocking spring solution testing. Selection of alternative solutions to the motor.]] (2024-07-28)
+    - Test more advanced pin block solution using conductivity and springs
+    - Improve pin click stability through addition of extra attachments
+    - Add attachments to add further modular braille pin attachments and attach button to top pin
+    - Search for alternative solutions for the pin motor
+- [[5. Entry Prototype of entire exterior casing]] (2024-08-12)
+    - Design the exterior casing of the device as well as means of assembly of such casing
+    - Design a pin according to the braille standards
+- [[6. New Motor testing and Pin Reconstruction]] (2024-08-19)
+    - Adjust the pin module to meet the needs of new motor
+    - Test motor 50:1 motor power (torque) in terms of screw friction block and speed of moving pin up and down
+- [[7. A comparison between other buttons prototypes and different motors speeds]] (2024-09-01)
+    - Design the improvise 2 pin exterior casing of the device
+    - Test means of assembly of such casing
+    - Perform button click testing in the real device scenario
+- [[8. Small two pin device assembly and comfort of use considering functionality, buttons and up and down movement]] (2024-09-22)
+    - Design Small Compact casing with 2 pins to understand the casing and device empirically
+    - Design new bottom cover pin attachment method
+- [[9. Motor Simultaneous Movement with time control, casing modifications and ESP32 Introduction]] (2024-10-06)
+    - Assemble Proper size, 6 braille pin device
+    - Use ESP32 as microcontroller (WHY?)
+    - Use millis() to control the timing instead of delays
+- [[10. Motor block aluminum sensor and AI-Thinker Board]] (2024-10-13)
+    - Create aluminum sensor from conductive material to check pin height
+    - Connect AI-Thinker VC-02 board to ESP32 to perform voice activated actions
+- [[11. Creative Presentation of Device Orientation and Device Casing Adjustments]] (2024-10-20)
+    - Create modular system to attach printed items to front and back of the device
+    - Create head and tails shapes to creatively indicate device orientation
+- [[12. Sanding Techniques and Finishing 3D models]] (2024-11-03)
+    - Create high fidelity 3D model finish
+    - Smooth parts of the design
+    - Paint the parts
+    - Test transparent 3D filament
+- [[13. ESP32 Text-to-Speech with Whispers OpenAI and Speech-to-Text using Deepgram]] (2024-11-17)
+    - Create a prototype of the text-to-speech device to connect to Whispers API
+    - Create a prototype of speech-to-text to transcribe
+- [[14. Raspberry Pi Zero 2 W]] (2024-12-01)
+    - Create more convenient speech-to-text and text-to-speech systems
+    - Test Raspberry Pi Zero 2 W
+- [[15. Raspberry Pi Zero 2 W and ESP32 UART connection]] (2024-12-08)
+    - Create UART connection between ESP32 and Rasberry PI Zero 2 W
+- [[16. ESP32 Code Modification into Functions and Response According to UART. Pin Extender connection. Formation of Braille Letters.]] (2024-12-29)
+    - Contain the millis, touch sensor and button code to functions with ChatGPT
+    - Use former successful experiments e.g. aluminum foil sensor, N10 motors and button clicks in single setup
+    - Use Pin Extender
+    - Form the automatic up movement on trigger with UART and button click downwards movement
+    - Form initial upwards movement to test pins after device turns on
+    - Form braille letters in the code
+- [[17. Interactive Connection to Raspberry PI Zero 2W and ESP32. Chat GPT response and storytelling testing and user flow.]] (2025-01-12)
+    - Test ESP32 and Raspberry PI as an interactive system
+    - Create a usable storytelling functionality with ChatGPT
+    - Test stories and device functionality
+    - Form and understand user experience and user flow
+- [[18. Additional Compartment for Electronics.]] (2025-01-19)
+    - Print Additional Electronic components compartment
+    - Develop Cable Blocker to hold cables
+- [[19. Chat GPT disability storytelling finetuning]] (2025-01-26)
+    - Check ChatGPT adaptability to fine tuned dataset
+
+## Other pages
+- [[DIY Tutorial]]
+- [[Canvas Graph Tree Link]]

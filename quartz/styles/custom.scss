@@ -1,3 +1,45 @@
 @use "./base.scss";
+@use "./variables.scss" as *;
 
 // put your custom CSS here!
+
+// Explorer. The list of notes is longer than the screen, so the panel has to scroll.
+// Quartz sizes the list with percentage heights and fades its end with a mask image.
+// Percentage heights inside flex items are not reliable in Safari, and a mask on the
+// element that scrolls can stop touch scrolling there. The panel therefore becomes a
+// flex column that scrolls by itself, and the fade is drawn by a sticky overlay instead.
+@media all and not ($mobile) {
+  .sidebar.left > .explorer {
+    min-height: 0;
+
+    & > .explorer-content {
+      display: flex;
+      flex-direction: column;
+      min-height: 0;
+      max-height: none;
+      overflow-y: auto;
+      overscroll-behavior: contain;
+      scrollbar-width: thin;
+
+      & > ul.overflow {
+        flex: 0 0 auto;
+        max-height: none;
+        overflow-y: visible;
+        padding-bottom: 2.5rem;
+        mask-image: none;
+        -webkit-mask-image: none;
+      }
+
+      &::after {
+        content: "";
+        display: block;
+        position: sticky;
+        bottom: 0;
+        flex: 0 0 3rem;
+        margin-top: -3rem;
+        pointer-events: none;
+        background: linear-gradient(to bottom, transparent, var(--light));
+      }
+    }
+  }
+}
