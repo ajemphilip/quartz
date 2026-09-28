@@ -2,7 +2,7 @@
 title: MooMoo Redesign Workbook
 date: 2026-07-22
 ---
-%% Draft prepared from the project files on 2026-09-21. Blocks marked TO FILL in the steps need Philip. %%
+%% Draft prepared from the project files on 2026-09-21. %%
 
 # MooMoo Redesign Workbook
 This is the second workbook of the Moo Moo project. The first one, steps 0 to 19, followed the device from a single motorised pin in July 2024 to a talking six dot braille cell in January 2025 (start at [[0. Justification and Introduction]]). This workbook picks the device up again in November 2025 and follows its redesign until July 2026 in ten more steps, 20 to 29.
@@ -19,7 +19,7 @@ The redesigned device taken apart in OpenSCAD. 1 bottom shell, 2 Raspberry Pi on
 ## How this workbook was written
 The steps were reconstructed from the project folder and not from a diary. Every dimension comes from an OpenSCAD source file, every print setting from a PrusaSlicer project, every electrical rule from the Pi code, and every date from the time a file was last saved, converted to Toronto time. The folder holds 175 design files, 47 OpenSCAD sources, 123 STL exports and 5 slicer projects, and 77 source files of Pi code and setup app. The images were rendered in OpenSCAD 2021.01 with the BOSL2 library from the same sources at a lower resolution. Parts are coloured orange and blue because those are the filament colours stored in the slicer projects. Where an image contains something that is not in the source files, such as the outline of a Raspberry Pi or a block standing in for the power bank, the caption says so.
 
-What a folder cannot hold is what happened at the bench. Each step therefore has blocks marked TO FILL for photos, measurements and what the parts felt like in the hand.
+What a folder cannot hold is what happened at the bench. Photos, measurements and how the parts felt in the hand are still to be added to these steps.
 
 ## Timeline of the files
 ![[MooMooRedesign_00_file_timeline.png]]
