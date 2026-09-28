@@ -3,43 +3,61 @@
 
 // put your custom CSS here!
 
-// Explorer. The list of notes is longer than the screen, so the panel has to scroll.
-// Quartz sizes the list with percentage heights and fades its end with a mask image.
-// Percentage heights inside flex items are not reliable in Safari, and a mask on the
-// element that scrolls can stop touch scrolling there. The panel therefore becomes a
-// flex column that scrolls by itself, and the fade is drawn by a sticky overlay instead.
-@media all and not ($mobile) {
-  .sidebar.left > .explorer {
-    min-height: 0;
+// Explorer. The list of notes is longer than the screen, so it has to scroll.
+// Quartz scrolls the list inside a box whose height comes from nested flex items and
+// percentage sizes, and fades the end of the list with a mask image. Safari does not
+// always give that box a height, and a mask on the element that scrolls can stop the
+// scrolling on touch screens. Here the whole left column scrolls instead. It is a plain
+// block of 100vh with overflow auto, which every browser and every touch screen can
+// scroll, and the fade at the bottom is drawn by a sticky overlay rather than a mask.
+// The query is written as a plain min-width so that older browsers read it too.
+@media (min-width: 801px) {
+  .sidebar.left {
+    overflow-x: hidden;
+    overflow-y: auto;
+    scrollbar-width: thin;
 
-    & > .explorer-content {
-      display: flex;
-      flex-direction: column;
-      min-height: 0;
-      max-height: none;
-      overflow-y: auto;
-      overscroll-behavior: contain;
-      scrollbar-width: thin;
+    & > .explorer {
+      flex: 0 0 auto;
+      overflow: visible;
 
-      & > ul.overflow {
-        flex: 0 0 auto;
-        max-height: none;
-        overflow-y: visible;
-        padding-bottom: 2.5rem;
-        mask-image: none;
-        -webkit-mask-image: none;
+      &.collapsed {
+        flex: 0 0 1.2rem;
+        overflow: hidden;
       }
 
-      &::after {
-        content: "";
-        display: block;
-        position: sticky;
-        bottom: 0;
-        flex: 0 0 3rem;
-        margin-top: -3rem;
-        pointer-events: none;
-        background: linear-gradient(to bottom, transparent, var(--light));
+      & > .explorer-content {
+        max-height: none;
+        overflow: visible;
+
+        & > ul.overflow {
+          max-height: none;
+          overflow: visible;
+          padding-bottom: 2.5rem;
+          mask-image: none;
+          -webkit-mask-image: none;
+        }
       }
     }
+
+    &:has(> .explorer:not(.collapsed))::after {
+      content: "";
+      display: block;
+      position: sticky;
+      bottom: 0;
+      flex: 0 0 3rem;
+      margin-top: calc(-3rem - 1.2rem);
+      pointer-events: none;
+      background: linear-gradient(to bottom, transparent, var(--light));
+    }
+  }
+}
+
+// On phones the explorer opens as a panel and its list scrolls inside that panel.
+// The mask that fades the end of the list is dropped there for the same reason.
+@media all and ($mobile) {
+  .explorer > .explorer-content > ul.overflow {
+    mask-image: none;
+    -webkit-mask-image: none;
   }
 }
