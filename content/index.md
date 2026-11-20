@@ -11,7 +11,7 @@ This project extends questions raised in my Major Research Project at York Unive
 
 ## Workbooks
 - [[MooMoo/index|MooMoo Workbook, steps 0 to 19]]. July 2024 to January 2025. From a single motorised pin to a talking six dot braille cell
-- [[MooMoo Redesign/index|MooMoo Redesign Workbook, steps 20 to 29]]. November 2025 to July 2026. Printed modular actuators, a three part casing, and a Raspberry Pi with a power bank inside the device
+- [[MooMoo Redesign/index|MooMoo Redesign Workbook, steps 20 to 31]]. November 2025 to July 2026. Printed modular actuators, a three part casing, and a Raspberry Pi with a power bank inside the device, set up and calibrated from a phone
 - [[DIY Tutorial]]
 
 ---
@@ -69,10 +69,10 @@ Behavior frames literacy as a **collaborative game** with a friendly character.
 ## System Architecture
 
 **Core Components**
-- Raspberry Pi Zero 2 W — logic + audio processing
-- ESP32-S3 — pin motor control + real-time feedback
+- Raspberry Pi Zero 2 W — logic + audio processing, and since the 2026 redesign also pin motor control through three TB6612FNG driver boards
+- ESP32-S3 — pin motor control + real-time feedback in the first workbook, removed in the redesign
 - Motorized **Braille pins** — modular, swappable units
-- Capacitive or button-based spelling interface
+- Button-based spelling interface, one push button under every dot
 - Whisper + GPT + TTS pipeline for voice + story
 
 The device is built to evolve as fabrication methods improve.
