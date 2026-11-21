@@ -11,7 +11,7 @@ This project extends questions raised in my Major Research Project at York Unive
 
 ## Workbooks
 - [[MooMoo/index|MooMoo Workbook, steps 0 to 19]]. July 2024 to January 2025. From a single motorised pin to a talking six dot braille cell
-- [[MooMoo Redesign/index|MooMoo Redesign Workbook, steps 20 to 31]]. November 2025 to July 2026. Printed modular actuators, a three part casing, and a Raspberry Pi with a power bank inside the device, set up and calibrated from a phone
+- [[MooMoo Redesign/index|MooMoo Redesign Workbook, steps 20 to 33]]. November 2025 to July 2026, and from November 2026 one step for each day of new work. Printed modular actuators, a three part casing, and a Raspberry Pi with a power bank inside the device, set up and calibrated from a phone
 - [[DIY Tutorial]]
 
 ---

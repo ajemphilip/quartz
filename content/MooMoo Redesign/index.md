@@ -47,7 +47,7 @@ One module is one braille dot. From the socket upward it is the shaft body with 
 | Top shell | 1 | `topCasingSmallerDots.scad`, 12 May | None. `topCasing.stl` of 11 May has the larger grip dots | 21 |
 | Key | 1 | `keyMooHeadSmallerDots.scad`, 12 May | None. `keyMooMooHeadAdjustedCube9mm.stl` of 11 May has the cube of 9 mm | 25 |
 | Head | 1 | `moomooHeadAdjustedRowek.scad`, 21 April, in the folder casingFixed | `moomooHeadAdjustedRowek.stl`, 21 April | 25 |
-| Pi code and setup app | | Folder `RaspberryAndPython`, last saved 22 July | | 28 to 31 |
+| Pi code and setup app | | Folder `RaspberryAndPython`, last saved 22 July, on GitHub as `moo-moo-dashboard` since 20 November 2026 | | 28 to 33 |
 
 All files are in the folder finalMooMoo unless the table says otherwise. For every row that names an export, the newest source was rendered again and compared with the mesh in the folder, and the two agree. The top shell and the key are the two parts whose newest source was never exported into the folder. One module needs one motor, one push button and one bolt in addition to its twelve printed parts. The device also needs a Raspberry Pi Zero 2 W, three TB6612FNG boards, a USB sound card with a microphone, two speakers and a power bank.
 
@@ -118,6 +118,11 @@ Two habits show up in every burst. When a fit is in doubt, only that feature is 
 - [[29. Power bank pocket, speaker mounts and the shared 5 V rail]]. May to July 2026. A pocket for the power bank, zip tie mounts for two speakers, and the rules in the Pi code that keep six motors from browning out the computer
 - [[30. The Pi without the ESP32. Motor drivers on GPIO, setup over wifi or Bluetooth and the model presets]]. May to July 2026. The Pi drives the dots and reads the buttons by itself, is set up from a phone over its own wifi or Bluetooth, and calls the models itself
 - [[31. Pin calibration. Matching each motor and button to its dot]]. May 2026. A wizard on the phone matches each motor and button to its dot and corrects a reversed motor in software
+
+## After the redesign
+From November 2026 each day of new work gets its own step, written on the day.
+- [[32. Working on the Pi from the Mac. SSH over the home wifi and the Pi code under version control]]. 20 November 2026. The Pi is reached over the home wifi, its installed code is found identical to the copy on the Mac, and that copy is committed to git and pushed to GitHub before anything is changed
+- [[33. Building a Moo from a blank SD card. The installer, the three services and the two command line tools]]. Written on 20 November 2026 from the code of May to July 2026. How a fresh Raspberry Pi OS becomes a Moo, what runs on it, and how a finished card is cleaned for copying
 
 ## What changed since the first workbook
 | | First workbook, 2024 to 2025 | Redesign, 2025 to 2026 |
