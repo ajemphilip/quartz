@@ -124,6 +124,7 @@ From November 2026 each day of new work gets its own step, written on the day.
 - [[32. Working on the Pi from the Mac. SSH over the home wifi and the Pi code under version control]]. 20 November 2026. The Pi is reached over the home wifi, its installed code is found identical to the copy on the Mac, and that copy is committed to git and pushed to GitHub before anything is changed
 - [[33. Building a Moo from a blank SD card. The installer, the three services and the two command line tools]]. Written on 20 November 2026 from the code of May to July 2026. How a fresh Raspberry Pi OS becomes a Moo, what runs on it, and how a finished card is cleaned for copying
 - [[34. A computer for Moo in one line. Moo Local installed from the Moo itself and three choices on the AI engine screen]]. 21 November 2026. A Mac installs Moo Local with one line that the Moo hands out, and the AI engine screen is reduced to three choices with all computers in one list
+- [[35. This device on a phone. The first run on the iPhone 16 Pro]]. 21 November 2026. The website crashes when the phone is asked to do the AI work, a crash now leaves a trace, and each device chooses its own models
 
 ## What changed since the first workbook
 | | First workbook, 2024 to 2025 | Redesign, 2025 to 2026 |
