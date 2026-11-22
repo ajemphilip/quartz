@@ -126,6 +126,7 @@ From November 2026 each day of new work gets its own step, written on the day.
 - [[34. A computer for Moo in one line. Moo Local installed from the Moo itself and three choices on the AI engine screen]]. 21 November 2026. A Mac installs Moo Local with one line that the Moo hands out, and the AI engine screen is reduced to three choices with all computers in one list
 - [[35. This device on a phone. The first run on the iPhone 16 Pro]]. 21 November 2026. The website crashes when the phone is asked to do the AI work, a crash now leaves a trace, and each device chooses its own models
 - [[36. The Moo app on iPhone and Android. Models that fit each phone, the Moo's remote and a list of devices]]. 21 November 2026. What a phone browser and the Pi can carry is measured, one app for iPhone and Android becomes the Moo's remote and its AI, five faults of the first stories are fixed on the Moo, and five newer story models are ranked
+- [[37. Kitten 2 in a browser. The text side rewritten for the web, published as a library and offered on This device]]. 22 November 2026. No browser library for the small Kitten 2 voices existed, so the text side of Kitten 2 is rewritten for the web and checked against the Python package, published as `kitten-tts-2-browser`, and Kitten 2 Pico and Nano become voice models on This device
 
 ## What changed since the first workbook
 | | First workbook, 2024 to 2025 | Redesign, 2025 to 2026 |
